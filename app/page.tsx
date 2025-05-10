@@ -1,4 +1,4 @@
-"use client"; // Required for using hooks like useState, useEffect
+"use client"; // Require for using hooks like useState, useEffect
 
 import Image from "next/image";
 import { useState } from "react";
