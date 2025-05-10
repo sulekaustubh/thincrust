@@ -1,7 +1,7 @@
 "use client"; // Required for using hooks like useState, useEffect
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 // Initialize Supabase client with public environment variables
