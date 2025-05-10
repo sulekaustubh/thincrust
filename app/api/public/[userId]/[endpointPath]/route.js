@@ -4,11 +4,15 @@ import { NextResponse } from "next/server";
 // IMPORTANT: Set the runtime to edge
 export const runtime = "edge";
 
-// Initialize Supabase client
-// Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are in your .env file
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Initialize Supabase client - using server-side env variables
+// instead of NEXT_PUBLIC_ prefixed ones
+const supabaseUrl =
+	process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey =
+	process.env.SUPABASE_SERVICE_ROLE_KEY ||
+	process.env.SUPABASE_ANON_KEY ||
+	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function GET(request, { params }) {
 	const { userId, endpointPath: endpointPathArray } = params;
