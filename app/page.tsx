@@ -1,34 +1,60 @@
 "use client"; // Required for using hooks like useState, useEffect
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+// Initialize Supabase client with public environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function Home() {
 	const [apiResponse, setApiResponse] = useState<object | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const fetchTestData = async () => {
+	const fetchUsers = async () => {
 		setIsLoading(true);
 		setError(null);
 		setApiResponse(null);
 
-		const testUserId = "user123";
-		const testEndpointPath = "mydata";
+		try {
+			const { data, error } = await supabase.from("users").select("*");
+
+			if (error) {
+				throw new Error(error.message);
+			}
+
+			setApiResponse(data);
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setError(err.message);
+			} else {
+				setError("An unexpected error occurred.");
+			}
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const fetchUsersViaEdge = async () => {
+		setIsLoading(true);
+		setError(null);
+		setApiResponse(null);
 
 		try {
-			const response = await fetch(
-				`/api/public/${testUserId}/${testEndpointPath}`
-			);
+			const response = await fetch("/api/users");
 			const data = await response.json();
 
 			if (!response.ok) {
 				throw new Error(
 					data && typeof data.error === "string"
 						? data.error
-						: "Failed to fetch API data"
+						: "Failed to fetch users from API"
 				);
 			}
+
 			setApiResponse(data);
 		} catch (err: unknown) {
 			if (err instanceof Error) {
@@ -93,17 +119,24 @@ export default function Home() {
 
 				<div className="mt-10 p-6 border border-gray-300 dark:border-gray-700 rounded-lg w-full max-w-md">
 					<h2 className="text-xl font-semibold mb-4 text-center sm:text-left">
-						Test Your Dynamic API Endpoint
+						Fetch Users from Supabase
 					</h2>
-					<button
-						onClick={fetchTestData}
-						disabled={isLoading}
-						className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-					>
-						{isLoading
-							? "Loading..."
-							: "Fetch Test Data (user123/mydata)"}
-					</button>
+					<div className="flex flex-col gap-3">
+						<button
+							onClick={fetchUsers}
+							disabled={isLoading}
+							className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+						>
+							{isLoading ? "Loading..." : "Direct from Supabase"}
+						</button>
+						<button
+							onClick={fetchUsersViaEdge}
+							disabled={isLoading}
+							className="w-full rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-50"
+						>
+							{isLoading ? "Loading..." : "Via Edge Function"}
+						</button>
+					</div>
 					{error && (
 						<div className="mt-4 p-3 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 rounded">
 							<p className="font-semibold">Error:</p>
@@ -112,7 +145,7 @@ export default function Home() {
 					)}
 					{apiResponse && (
 						<div className="mt-4 p-3 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 rounded">
-							<p className="font-semibold">API Response:</p>
+							<p className="font-semibold">Users Data:</p>
 							<pre className="text-sm overflow-x-auto">
 								{JSON.stringify(apiResponse, null, 2)}
 							</pre>
