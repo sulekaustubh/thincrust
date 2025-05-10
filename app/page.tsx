@@ -1,10 +1,10 @@
 "use client"; // Required for using hooks like useState, useEffect
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Home() {
-	const [apiResponse, setApiResponse] = useState<any>(null);
+	const [apiResponse, setApiResponse] = useState<object | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -23,11 +23,19 @@ export default function Home() {
 			const data = await response.json();
 
 			if (!response.ok) {
-				throw new Error(data.error || "Failed to fetch API data");
+				throw new Error(
+					data && typeof data.error === "string"
+						? data.error
+						: "Failed to fetch API data"
+				);
 			}
 			setApiResponse(data);
-		} catch (err: any) {
-			setError(err.message);
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setError(err.message);
+			} else {
+				setError("An unexpected error occurred.");
+			}
 		} finally {
 			setIsLoading(false);
 		}

@@ -1,22 +1,22 @@
 import { createClient } from "@supabase/supabase-js";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 // IMPORTANT: Set the runtime to edge
 export const runtime = "edge";
 
 // Initialize Supabase client
 // Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are in your .env file
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export async function GET(
-	request: NextRequest,
-	{ params }: { params: { userId: string; endpointPath: string } }
-) {
-	const { userId, endpointPath } = params;
+export async function GET(request, { params }) {
+	const { userId, endpointPath: endpointPathArray } = params;
 
-	if (!userId || !endpointPath) {
+	// Join the path segments if it's an array. Assumes it's stored as a single string in DB.
+	const joinedEndpointPath = endpointPathArray.join("/");
+
+	if (!userId || !joinedEndpointPath) {
 		return NextResponse.json(
 			{ error: "User ID and endpoint path are required" },
 			{ status: 400 }
@@ -29,7 +29,7 @@ export async function GET(
 			.from("user_api_endpoint_configs")
 			.select("target_table_name")
 			.eq("user_id", userId)
-			.eq("endpoint_path", endpointPath)
+			.eq("endpoint_path", joinedEndpointPath)
 			.single(); // Expect only one config per user/path
 
 		if (configError) {
@@ -72,7 +72,9 @@ export async function GET(
 				apiDataError
 			);
 			return NextResponse.json(
-				{ error: `Failed to fetch data for endpoint: ${endpointPath}` },
+				{
+					error: `Failed to fetch data for endpoint: ${joinedEndpointPath}`,
+				},
 				{ status: 500 }
 			);
 		}
