@@ -111,9 +111,7 @@ export default function Home() {
 		setTableData(null);
 
 		try {
-			const res = await fetch(
-				`/api/get-table?table=${fetchTableName}`
-			);
+			const res = await fetch(`/api/get-table?table=${fetchTableName}`);
 			const data = await res.json();
 
 			if (!res.ok) {
@@ -139,10 +137,6 @@ export default function Home() {
 	return (
 		<div className="grid grid-rows-[22px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
 			<main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-				
-
-				
-
 				<div className="mt-10 p-6 border border-gray-300 dark:border-gray-700 rounded-lg w-full max-w-md">
 					<h2 className="text-xl font-semibold mb-4 text-center sm:text-left">
 						Fetch Users from Supabase
@@ -162,14 +156,6 @@ export default function Home() {
 							<p>{error}</p>
 						</div>
 					)}
-					{/* {apiResponse && (
-						<div className="mt-4 p-3 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 rounded">
-							<p className="font-semibold">Users Data:</p>
-							<pre className="text-sm overflow-x-auto">
-								{JSON.stringify(apiResponse, null, 2)}
-							</pre>
-						</div>
-					)} */}
 				</div>
 
 				<div className="mt-4 p-6 border border-gray-300 dark:border-gray-700 rounded-lg w-full max-w-md">
@@ -263,15 +249,6 @@ export default function Home() {
 							{isFetchingTable ? "Fetching..." : "Fetch Data"}
 						</button>
 					</div>
-
-					{/* {tableData && (
-						<div className="mt-4 p-3 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 rounded">
-							<p className="font-semibold">Table Data:</p>
-							<pre className="text-sm overflow-x-auto">
-								{JSON.stringify(tableData, null, 2)}
-							</pre>
-						</div>
-					)} */}
 				</div>
 			</main>
 			<footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
