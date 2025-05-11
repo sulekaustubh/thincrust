@@ -2,41 +2,19 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-// Initialize Supabase client with public environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function Home() {
 	const [apiResponse, setApiResponse] = useState<object | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-
-	const fetchUsers = async () => {
-		setIsLoading(true);
-		setError(null);
-		setApiResponse(null);
-
-		try {
-			const { data, error } = await supabase.from("users").select("*");
-
-			if (error) {
-				throw new Error(error.message);
-			}
-
-			setApiResponse(data);
-		} catch (err: unknown) {
-			if (err instanceof Error) {
-				setError(err.message);
-			} else {
-				setError("An unexpected error occurred.");
-			}
-		} finally {
-			setIsLoading(false);
-		}
-	};
+	const [tableName, setTableName] = useState<string>("");
+	const [isCreatingTable, setIsCreatingTable] = useState(false);
+	const [tableCreationResponse, setTableCreationResponse] = useState<
+		object | null
+	>(null);
+	const [fetchTableName, setFetchTableName] = useState<string>("");
+	const [tableData, setTableData] = useState<object | null>(null);
+	const [isFetchingTable, setIsFetchingTable] = useState(false);
 
 	const fetchUsersViaEdge = async () => {
 		setIsLoading(true);
@@ -67,68 +45,109 @@ export default function Home() {
 		}
 	};
 
-	return (
-		<div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-			<main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-				<Image
-					className="dark:invert"
-					src="/next.svg"
-					alt="Next.js logo"
-					width={180}
-					height={38}
-					priority
-				/>
-				<ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-					<li className="mb-2 tracking-[-.01em]">
-						Get started by editing{" "}
-						<code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-							app/page.tsx
-						</code>
-						.
-					</li>
-					<li className="tracking-[-.01em]">
-						Save and see your changes instantly.
-					</li>
-				</ol>
+	const createTable = async () => {
+		if (!tableName.trim()) {
+			setError("Please enter a table name");
+			return;
+		}
 
-				<div className="flex gap-4 items-center flex-col sm:flex-row">
-					<a
-						className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-						href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<Image
-							className="dark:invert"
-							src="/vercel.svg"
-							alt="Vercel logomark"
-							width={20}
-							height={20}
-						/>
-						Deploy now
-					</a>
-					<a
-						className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-						href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Read our docs
-					</a>
-				</div>
+		setIsCreatingTable(true);
+		setError(null);
+		setTableCreationResponse(null);
+
+		try {
+			const response = await fetch("/api/create-table", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					tableName: `thryl_${tableName}`,
+					columns: [
+						{
+							name: "id",
+							type: "uuid",
+							isPrimaryKey: true,
+							defaultValue: "uuid_generate_v4()",
+						},
+						{ name: "title", type: "text", isNullable: false },
+						{
+							name: "created_at",
+							type: "timestamp",
+							defaultValue: "now()",
+						},
+					],
+				}),
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(
+					data && typeof data.error === "string"
+						? data.error
+						: "Failed to create table"
+				);
+			}
+
+			setTableCreationResponse(data);
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setError(err.message);
+			} else {
+				setError("An unexpected error occurred.");
+			}
+		} finally {
+			setIsCreatingTable(false);
+		}
+	};
+
+	const fetchTableData = async () => {
+		if (!fetchTableName.trim()) {
+			setError("Please enter a table name to fetch");
+			return;
+		}
+
+		setIsFetchingTable(true);
+		setError(null);
+		setTableData(null);
+
+		try {
+			const res = await fetch(
+				`/api/get-table?table=${fetchTableName}`
+			);
+			const data = await res.json();
+
+			if (!res.ok) {
+				throw new Error(
+					data && typeof data.error === "string"
+						? data.error
+						: "Failed to fetch table data"
+				);
+			}
+
+			setTableData(data);
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setError(err.message);
+			} else {
+				setError("An unexpected error occurred.");
+			}
+		} finally {
+			setIsFetchingTable(false);
+		}
+	};
+
+	return (
+		<div className="grid grid-rows-[22px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+			<main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+				
+
+				
 
 				<div className="mt-10 p-6 border border-gray-300 dark:border-gray-700 rounded-lg w-full max-w-md">
 					<h2 className="text-xl font-semibold mb-4 text-center sm:text-left">
 						Fetch Users from Supabase
 					</h2>
 					<div className="flex flex-col gap-3">
-						<button
-							onClick={fetchUsers}
-							disabled={isLoading}
-							className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-						>
-							{isLoading ? "Loading..." : "Direct from Supabase"}
-						</button>
 						<button
 							onClick={fetchUsersViaEdge}
 							disabled={isLoading}
@@ -143,14 +162,116 @@ export default function Home() {
 							<p>{error}</p>
 						</div>
 					)}
-					{apiResponse && (
+					{/* {apiResponse && (
 						<div className="mt-4 p-3 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 rounded">
 							<p className="font-semibold">Users Data:</p>
 							<pre className="text-sm overflow-x-auto">
 								{JSON.stringify(apiResponse, null, 2)}
 							</pre>
 						</div>
+					)} */}
+				</div>
+
+				<div className="mt-4 p-6 border border-gray-300 dark:border-gray-700 rounded-lg w-full max-w-md">
+					<h2 className="text-xl font-semibold mb-4 text-center sm:text-left">
+						Create Custom Table
+					</h2>
+					<div className="flex flex-col gap-4">
+						<div>
+							<label
+								htmlFor="tableName"
+								className="block text-sm font-medium mb-1"
+							>
+								Table Identifier
+							</label>
+							<div className="flex items-center gap-2">
+								<span className="text-sm text-gray-500 dark:text-gray-400">
+									thryl_
+								</span>
+								<input
+									id="tableName"
+									type="text"
+									value={tableName}
+									onChange={(e) =>
+										setTableName(e.target.value)
+									}
+									placeholder="xyz"
+									className="flex-1 rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800"
+								/>
+							</div>
+							<p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+								Final table name: thryl_{tableName}
+							</p>
+						</div>
+
+						<button
+							onClick={createTable}
+							disabled={isCreatingTable || !tableName.trim()}
+							className="w-full rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
+						>
+							{isCreatingTable ? "Creating..." : "Create Table"}
+						</button>
+					</div>
+
+					{tableCreationResponse && (
+						<div className="mt-4 p-3 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 rounded">
+							<p className="font-semibold">Table Created:</p>
+							<pre className="text-sm overflow-x-auto">
+								{JSON.stringify(tableCreationResponse, null, 2)}
+							</pre>
+						</div>
 					)}
+				</div>
+
+				<div className="mt-4 p-6 border border-gray-300 dark:border-gray-700 rounded-lg w-full max-w-md">
+					<h2 className="text-xl font-semibold mb-4 text-center sm:text-left">
+						Fetch Table Data
+					</h2>
+					<div className="flex flex-col gap-4">
+						<div>
+							<label
+								htmlFor="fetchTableName"
+								className="block text-sm font-medium mb-1"
+							>
+								Table to Fetch
+							</label>
+							<div className="flex items-center gap-2">
+								<span className="text-sm text-gray-500 dark:text-gray-400">
+									thryl_
+								</span>
+								<input
+									id="fetchTableName"
+									type="text"
+									value={fetchTableName}
+									onChange={(e) =>
+										setFetchTableName(e.target.value)
+									}
+									placeholder="table_name"
+									className="flex-1 rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800"
+								/>
+							</div>
+							<p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+								Will fetch from: thryl_{fetchTableName}
+							</p>
+						</div>
+
+						<button
+							onClick={fetchTableData}
+							disabled={isFetchingTable || !fetchTableName.trim()}
+							className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+						>
+							{isFetchingTable ? "Fetching..." : "Fetch Data"}
+						</button>
+					</div>
+
+					{/* {tableData && (
+						<div className="mt-4 p-3 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 rounded">
+							<p className="font-semibold">Table Data:</p>
+							<pre className="text-sm overflow-x-auto">
+								{JSON.stringify(tableData, null, 2)}
+							</pre>
+						</div>
+					)} */}
 				</div>
 			</main>
 			<footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
