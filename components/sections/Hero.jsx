@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { MorphingText } from "@/components/magicui/morphing-text";
 
 const navigation = [
 	{ name: "Features", href: "#" },
@@ -221,20 +222,38 @@ export default function Hero() {
 				</div>
 				<div className="py-24 sm:py-32 lg:pb-40">
 					<div className="mx-auto max-w-7xl px-6 lg:px-8">
-						<div className="mx-auto max-w-2xl text-center">
-							<h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-								Build your backend insanely fast
+						<div className="mx-auto max-w-lg text-center">
+							<h1 className="text-5xl text-center font-bold tracking-tight text-white">
+								build your
 							</h1>
-							<p className="mt-6 text-lg leading-8 text-gray-300">
+							<div className="text-8xl uppercase font-bold tracking-tight text-white relative">
+								<MorphingText
+									texts={[
+										"backend",
+										"APIs",
+										"database",
+										"server",
+										"endpoints",
+										"schemas",
+										"auth",
+										"security",
+									]}
+									className="text-8xl uppercase text-center font-bold tracking-tight text-white h-24 w-full"
+								/>
+							</div>
+							<h1 className="text-5xl text-center font-bold tracking-tight text-white ">
+								insanely fast
+							</h1>
+							{/* <p className="mt-6 text-lg leading-8 text-gray-300">
 								Create powerful, production-ready APIs in
 								minutes with zero code. ThinCrust handles your
 								database, hosting, and deployments while you
 								focus on building what matters.
-							</p>
+							</p> */}
 							<div className="mt-10 flex items-center justify-center gap-x-6">
 								<a
 									href="/builder/tables"
-									className="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+									className="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
 								>
 									Start building for free
 								</a>

@@ -97,31 +97,31 @@ export default function BuilderLayout({ children }) {
 				<div className="w-48 bg-white shadow-sm border-r border-gray-200 fixed h-full">
 					<div className="p-6">
 						<h1 className="text-lg font-bold text-gray-900">
-							ThinCrust Builder
+							Thincrust
 						</h1>
 					</div>
 
 					<nav className="mt-6">
-						<div className="px-3">
+						<div className="px-3 ">
 							{sidebarItems.map((item) => {
 								const Icon = item.icon;
 								return (
 									<button
 										key={item.id}
 										onClick={() => handleNavigation(item)}
-										className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md mb-1 ${
+										className={`w-full flex items-center cursor-pointer px-3 py-2.5 text-sm font-semibold rounded-lg mb-2 ${
 											activeTab === item.id
-												? "bg-indigo-100 text-indigo-700"
+												? "bg-black/80 text-white/80"
 												: "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
 										}`}
 									>
 										<Icon className="mr-2 h-4 w-4" />
-										<span className="truncate">
+										<span className="truncate  ">
 											{item.name}
 										</span>
 										{item.count > 0 && (
 											<span
-												className={`ml-auto inline-block py-0.5 px-2 text-xs rounded-full ${
+												className={`ml-auto inline-block py-[2px] px-[7px] text-xs rounded-full ${
 													activeTab === item.id
 														? "bg-indigo-200 text-indigo-800"
 														: "bg-gray-200 text-gray-600"
@@ -139,7 +139,7 @@ export default function BuilderLayout({ children }) {
 
 				{/* Main Content Area */}
 				<div className="flex-1 ml-48">
-					<div className="p-8">{children}</div>
+					<div className="p-3">{children}</div>
 				</div>
 			</div>
 		</div>
