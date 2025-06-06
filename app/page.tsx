@@ -1,178 +1,193 @@
-"use client"; // Require for using hooks like useState, useEffect
+"use client";
 
-import Image from "next/image";
-import { useState } from "react";
 import Hero from "@/components/sections/Hero";
+import Features from "@/components/sections/Features";
+import About from "@/components/sections/About";
+import Pricing from "@/components/sections/Pricing";
+import Testimonials from "@/components/sections/Testimonials";
+import FAQ from "@/components/sections/FAQ";
+import CTA from "@/components/sections/CTA";
+import Footer from "@/components/sections/Footer";
+import { useState } from "react";
+import Features2 from "@/components/sections/Features2";
 
 export default function Home() {
-	const [apiResponse, setApiResponse] = useState<object | null>(null);
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-	const [tableName, setTableName] = useState<string>("");
-	const [isCreatingTable, setIsCreatingTable] = useState(false);
-	const [tableCreationResponse, setTableCreationResponse] = useState<
-		object | null
-	>(null);
-	const [fetchTableName, setFetchTableName] = useState<string>("");
-	const [tableData, setTableData] = useState<object | null>(null);
-	const [isFetchingTable, setIsFetchingTable] = useState(false);
-	const [tablePrefix, setTablePrefix] = useState<string>("thryl_");
-	const [tablesList, setTablesList] = useState<any[] | null>(null);
-	const [isListingTables, setIsListingTables] = useState(false);
+	// const [apiResponse, setApiResponse] = useState<object | null>(null);
+	// const [isLoading, setIsLoading] = useState(false);
+	// const [error, setError] = useState<string | null>(null);
+	// const [tableName, setTableName] = useState<string>("");
+	// const [isCreatingTable, setIsCreatingTable] = useState(false);
+	// const [tableCreationResponse, setTableCreationResponse] = useState<
+	// 	object | null
+	// >(null);
+	// const [fetchTableName, setFetchTableName] = useState<string>("");
+	// const [tableData, setTableData] = useState<object | null>(null);
+	// const [isFetchingTable, setIsFetchingTable] = useState(false);
+	// const [tablePrefix, setTablePrefix] = useState<string>("thryl_");
+	// const [tablesList, setTablesList] = useState<any[] | null>(null);
+	// const [isListingTables, setIsListingTables] = useState(false);
 
-	const fetchUsersViaEdge = async () => {
-		setIsLoading(true);
-		setError(null);
-		setApiResponse(null);
+	// const fetchUsersViaEdge = async () => {
+	// 	setIsLoading(true);
+	// 	setError(null);
+	// 	setApiResponse(null);
 
-		try {
-			const response = await fetch("/api/users");
-			const data = await response.json();
+	// 	try {
+	// 		const response = await fetch("/api/users");
+	// 		const data = await response.json();
 
-			if (!response.ok) {
-				throw new Error(
-					data && typeof data.error === "string"
-						? data.error
-						: "Failed to fetch users from API"
-				);
-			}
+	// 		if (!response.ok) {
+	// 			throw new Error(
+	// 				data && typeof data.error === "string"
+	// 					? data.error
+	// 					: "Failed to fetch users from API"
+	// 			);
+	// 		}
 
-			setApiResponse(data);
-		} catch (err: unknown) {
-			if (err instanceof Error) {
-				setError(err.message);
-			} else {
-				setError("An unexpected error occurred.");
-			}
-		} finally {
-			setIsLoading(false);
-		}
-	};
+	// 		setApiResponse(data);
+	// 	} catch (err: unknown) {
+	// 		if (err instanceof Error) {
+	// 			setError(err.message);
+	// 		} else {
+	// 			setError("An unexpected error occurred.");
+	// 		}
+	// 	} finally {
+	// 		setIsLoading(false);
+	// 	}
+	// };
 
-	const createTable = async () => {
-		if (!tableName.trim()) {
-			setError("Please enter a table name");
-			return;
-		}
+	// const createTable = async () => {
+	// 	if (!tableName.trim()) {
+	// 		setError("Please enter a table name");
+	// 		return;
+	// 	}
 
-		setIsCreatingTable(true);
-		setError(null);
-		setTableCreationResponse(null);
+	// 	setIsCreatingTable(true);
+	// 	setError(null);
+	// 	setTableCreationResponse(null);
 
-		try {
-			const response = await fetch("/api/create-table", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					tableName: `thryl_${tableName}`,
-					columns: [
-						{
-							name: "id",
-							type: "uuid",
-							isPrimaryKey: true,
-							defaultValue: "uuid_generate_v4()",
-						},
-						{ name: "title", type: "text", isNullable: false },
-						{
-							name: "created_at",
-							type: "timestamp",
-							defaultValue: "now()",
-						},
-					],
-				}),
-			});
+	// 	try {
+	// 		const response = await fetch("/api/create-table", {
+	// 			method: "POST",
+	// 			headers: { "Content-Type": "application/json" },
+	// 			body: JSON.stringify({
+	// 				tableName: `thryl_${tableName}`,
+	// 				columns: [
+	// 					{
+	// 						name: "id",
+	// 						type: "uuid",
+	// 						isPrimaryKey: true,
+	// 						defaultValue: "uuid_generate_v4()",
+	// 					},
+	// 					{ name: "title", type: "text", isNullable: false },
+	// 					{
+	// 						name: "created_at",
+	// 						type: "timestamp",
+	// 						defaultValue: "now()",
+	// 					},
+	// 				],
+	// 			}),
+	// 		});
 
-			const data = await response.json();
+	// 		const data = await response.json();
 
-			if (!response.ok) {
-				throw new Error(
-					data && typeof data.error === "string"
-						? data.error
-						: "Failed to create table"
-				);
-			}
+	// 		if (!response.ok) {
+	// 			throw new Error(
+	// 				data && typeof data.error === "string"
+	// 					? data.error
+	// 					: "Failed to create table"
+	// 			);
+	// 		}
 
-			setTableCreationResponse(data);
-		} catch (err: unknown) {
-			if (err instanceof Error) {
-				setError(err.message);
-			} else {
-				setError("An unexpected error occurred.");
-			}
-		} finally {
-			setIsCreatingTable(false);
-		}
-	};
+	// 		setTableCreationResponse(data);
+	// 	} catch (err: unknown) {
+	// 		if (err instanceof Error) {
+	// 			setError(err.message);
+	// 		} else {
+	// 			setError("An unexpected error occurred.");
+	// 		}
+	// 	} finally {
+	// 		setIsCreatingTable(false);
+	// 	}
+	// };
 
-	const fetchTableData = async () => {
-		if (!fetchTableName.trim()) {
-			setError("Please enter a table name to fetch");
-			return;
-		}
+	// const fetchTableData = async () => {
+	// 	if (!fetchTableName.trim()) {
+	// 		setError("Please enter a table name to fetch");
+	// 		return;
+	// 	}
 
-		setIsFetchingTable(true);
-		setError(null);
-		setTableData(null);
+	// 	setIsFetchingTable(true);
+	// 	setError(null);
+	// 	setTableData(null);
 
-		try {
-			const res = await fetch(`/api/get-table?table=${fetchTableName}`);
-			const data = await res.json();
+	// 	try {
+	// 		const res = await fetch(`/api/get-table?table=${fetchTableName}`);
+	// 		const data = await res.json();
 
-			if (!res.ok) {
-				throw new Error(
-					data && typeof data.error === "string"
-						? data.error
-						: "Failed to fetch table data"
-				);
-			}
+	// 		if (!res.ok) {
+	// 			throw new Error(
+	// 				data && typeof data.error === "string"
+	// 					? data.error
+	// 					: "Failed to fetch table data"
+	// 			);
+	// 		}
 
-			setTableData(data);
-		} catch (err: unknown) {
-			if (err instanceof Error) {
-				setError(err.message);
-			} else {
-				setError("An unexpected error occurred.");
-			}
-		} finally {
-			setIsFetchingTable(false);
-		}
-	};
+	// 		setTableData(data);
+	// 	} catch (err: unknown) {
+	// 		if (err instanceof Error) {
+	// 			setError(err.message);
+	// 		} else {
+	// 			setError("An unexpected error occurred.");
+	// 		}
+	// 	} finally {
+	// 		setIsFetchingTable(false);
+	// 	}
+	// };
 
-	const listTables = async () => {
-		setIsListingTables(true);
-		setError(null);
-		setTablesList(null);
+	// const listTables = async () => {
+	// 	setIsListingTables(true);
+	// 	setError(null);
+	// 	setTablesList(null);
 
-		try {
-			const res = await fetch(`/api/list-tables?prefix=${tablePrefix}`);
-			const data = await res.json();
+	// 	try {
+	// 		const res = await fetch(`/api/list-tables?prefix=${tablePrefix}`);
+	// 		const data = await res.json();
 
-			if (!res.ok) {
-				throw new Error(
-					data && typeof data.error === "string"
-						? data.error
-						: "Failed to fetch tables list"
-				);
-			}
+	// 		if (!res.ok) {
+	// 			throw new Error(
+	// 				data && typeof data.error === "string"
+	// 					? data.error
+	// 					: "Failed to fetch tables list"
+	// 			);
+	// 		}
 
-			console.log("Frontend received data:", data);
-			setTablesList(data.tables);
-		} catch (err: unknown) {
-			if (err instanceof Error) {
-				setError(err.message);
-			} else {
-				setError("An unexpected error occurred.");
-			}
-		} finally {
-			setIsListingTables(false);
-		}
-	};
+	// 		console.log("Frontend received data:", data);
+	// 		setTablesList(data.tables);
+	// 	} catch (err: unknown) {
+	// 		if (err instanceof Error) {
+	// 			setError(err.message);
+	// 		} else {
+	// 			setError("An unexpected error occurred.");
+	// 		}
+	// 	} finally {
+	// 		setIsListingTables(false);
+	// 	}
+	// };
 
-	console.log(tableData, apiResponse);
+	// console.log(tableData, apiResponse);
 
 	return (
 		<div>
 			<Hero />
+			<Features />
+			<Features2 />
+			<About />
+			<Testimonials />
+			<Pricing />
+			<FAQ />
+			<CTA />
+			<Footer />
 		</div>
 		// <div className="grid grid-rows-[22px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
 		// 	<main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
