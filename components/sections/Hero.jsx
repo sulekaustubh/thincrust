@@ -222,12 +222,17 @@ export default function Hero() {
 				</div>
 				<div className="py-24 sm:py-32 lg:pb-40">
 					<div className="mx-auto max-w-7xl px-6 lg:px-8">
-						<div className="mx-auto max-w-lg text-center">
-							<h1 className="text-5xl text-center font-bold tracking-tight text-white">
-								build your
+						<div className="mx-auto max-w-3xl text-center">
+							<div className="flex uppercase mx-auto text-xs font-medium text-emerald-500 bg-emerald-500/10 border w-fit border-emerald-500 rounded-full px-2 py-1.5 mb-2 tracking-wide items-center justify-center gap-2">
+								<p>Supabase on steroids</p>
+								{/* <p className="w-2 h-2 rounded-full bg-emerald-500" /> */}
+							</div>
+							<h1 className="text-6xl font-outfit text-center font-semibold tracking-tight text-white">
+								Scalable APIs without writing a single line of
+								backend code
 							</h1>
 							<div className="text-8xl uppercase font-bold tracking-tight text-white relative">
-								<MorphingText
+								{/* <MorphingText
 									texts={[
 										"backend",
 										"APIs",
@@ -239,10 +244,12 @@ export default function Hero() {
 										"security",
 									]}
 									className="text-8xl uppercase text-center font-bold tracking-tight text-white h-24 w-full"
-								/>
+								/> */}
 							</div>
-							<h1 className="text-5xl text-center font-bold tracking-tight text-white ">
-								insanely fast
+							<h1 className="tracking-wider text-xl font-extralight mt-2 text-center text-white/95 ">
+								Skip the boilerplate. Connect supabase & go from
+								DB to endpoints instantly.
+								{/* Workflow so fast, it might just replace your dev stack ! */}
 							</h1>
 							{/* <p className="mt-6 text-lg leading-8 text-gray-300">
 								Create powerful, production-ready APIs in
@@ -251,19 +258,19 @@ export default function Hero() {
 								focus on building what matters.
 							</p> */}
 							<div className="mt-10 flex items-center justify-center gap-x-6">
-								<a
+								<div
 									href="/builder/tables"
-									className="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+									className="rounded-md font-semibold px-6 py-2 text-white bg-emerald-500 "
 								>
-									Start building for free
-								</a>
-								<a
+									Start building
+								</div>
+								<div
 									href="/builder/tables"
-									className="text-sm font-semibold leading-6 text-white"
+									className="text-sm cursor-pointer font-semibold leading-6 text-white"
 								>
 									See how it works{" "}
 									<span aria-hidden="true">→</span>
-								</a>
+								</div>
 							</div>
 						</div>
 						<img
