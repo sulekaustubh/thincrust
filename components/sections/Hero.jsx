@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MorphingText } from "@/components/magicui/morphing-text";
+import { AuroraText } from "../magicui/aurora-text";
 
 const navigation = [
 	{ name: "Features", href: "#" },
@@ -228,8 +229,8 @@ export default function Hero() {
 								{/* <p className="w-2 h-2 rounded-full bg-emerald-500" /> */}
 							</div>
 							<h1 className="text-6xl font-outfit text-center font-semibold tracking-tight text-white">
-								Scalable APIs without writing a single line of
-								backend code
+								Scalable APIs without writing a single line of{" "}
+								<AuroraText>backend</AuroraText> code
 							</h1>
 							<div className="text-8xl uppercase font-bold tracking-tight text-white relative">
 								{/* <MorphingText
