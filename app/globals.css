@@ -96,3 +96,25 @@ pre {
 		}
 	}
 }
+
+@layer components {
+	.c {
+		@apply flex justify-center items-center;
+	}
+
+	.b {
+		@apply border-2 border-black;
+	}
+
+	.br {
+		@apply border-2 border-red-500;
+	}
+
+	.bb {
+		@apply border-2 border-blue-500;
+	}
+
+	.bg {
+		@apply border-2 border-green-500;
+	}
+}

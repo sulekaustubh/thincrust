@@ -84,7 +84,7 @@ export default function Hero() {
 				}
 			`}</style>
 
-			<header className="absolute inset-x-0 top-0 z-50">
+			<header className="absolute text-white inset-x-0 top-0 z-50">
 				<nav
 					aria-label="Global"
 					className="flex items-center justify-between p-6 lg:px-8"
@@ -224,7 +224,7 @@ export default function Hero() {
 				<div className="py-24 sm:py-32 lg:pb-40">
 					<div className="mx-auto max-w-7xl px-6 lg:px-8">
 						<div className="mx-auto max-w-3xl text-center">
-							<div className="flex uppercase mx-auto text-xs font-medium text-emerald-500 bg-emerald-500/10 border w-fit border-emerald-500 rounded-full px-2 py-1.5 mb-2 tracking-wide items-center justify-center gap-2">
+							<div className="flex uppercase mx-auto text-xs font-medium text-indigo-500 bg-indigo-500/10 border w-fit border-indigo-500 rounded-full px-2 py-1.5 mb-2 tracking-wide items-center justify-center gap-2">
 								<p>Supabase on steroids</p>
 								{/* <p className="w-2 h-2 rounded-full bg-emerald-500" /> */}
 							</div>
@@ -261,7 +261,7 @@ export default function Hero() {
 							<div className="mt-10 flex items-center justify-center gap-x-6">
 								<div
 									href="/builder/tables"
-									className="rounded-md font-semibold px-6 py-2 text-white bg-emerald-500 "
+									className="rounded-md font-semibold px-6 py-2 text-white bg-indigo-600 "
 								>
 									Start building
 								</div>

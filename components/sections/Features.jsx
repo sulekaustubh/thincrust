@@ -75,7 +75,7 @@ const features = [
 
 export default function Features() {
 	return (
-		<div className="bg-[#0a0a0a] py-24 sm:py-32 relative overflow-hidden">
+		<div className="bg-contentPrimary py-24 sm:py-32 relative overflow-hidden">
 			{/* Background gradient */}
 			<div className="absolute inset-0 bg-gradient-to-br from-indigo-900/20 via-transparent to-purple-900/20"></div>
 
