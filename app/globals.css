@@ -118,3 +118,8 @@ pre {
 		@apply border-2 border-green-500;
 	}
 }
+
+.bg-matteBlack {
+	/* background-color: #111010; */
+	background-color: #0f0e0e;
+}

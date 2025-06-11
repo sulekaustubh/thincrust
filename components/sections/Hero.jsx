@@ -5,6 +5,7 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MorphingText } from "@/components/magicui/morphing-text";
 import { AuroraText } from "../magicui/aurora-text";
+import Tagline from "../texts/Tagline";
 
 const navigation = [
 	{ name: "Features", href: "#" },
@@ -35,7 +36,7 @@ export default function Hero() {
 	}, []);
 
 	return (
-		<div className="bg-[#111010] relative overflow-hidden">
+		<div className="bg-matteBlack relative overflow-hidden">
 			<style jsx>{`
 				@keyframes gradientFlow {
 					0% {
@@ -224,10 +225,11 @@ export default function Hero() {
 				<div className="py-24 sm:py-32 lg:pb-40">
 					<div className="mx-auto max-w-7xl px-6 lg:px-8">
 						<div className="mx-auto max-w-3xl text-center">
-							<div className="flex uppercase mx-auto text-xs font-medium text-indigo-500 bg-indigo-500/10 border w-fit border-indigo-500 rounded-full px-2 py-1.5 mb-2 tracking-wide items-center justify-center gap-2">
+							<Tagline text="Supabase on steroids" />
+							{/* <div className="flex uppercase mx-auto text-xs font-medium text-indigo-400 bg-indigo-500/10 border w-fit border-indigo-400 rounded-full px-2 py-1.5 mb-2 tracking-wide items-center justify-center gap-2">
 								<p>Supabase on steroids</p>
 								{/* <p className="w-2 h-2 rounded-full bg-emerald-500" /> */}
-							</div>
+							{/* </div> */}
 							<h1 className="text-6xl font-outfit text-center font-semibold tracking-tight text-white">
 								Scalable APIs without writing a single line of{" "}
 								<AuroraText>backend</AuroraText> code
