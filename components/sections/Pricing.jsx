@@ -12,7 +12,7 @@ const tiers = [
 		mostPopular: false,
 	},
 	{
-		name: "Freelancer",
+		name: "Pro",
 		id: "tier-essential",
 		href: "#",
 		priceMonthly: "$9",
@@ -34,64 +34,64 @@ const sections = [
 		name: "Features",
 		features: [
 			{
-				name: "API testing environment",
-				tiers: { Hobbyist: true, Freelancer: true, Startup: true },
+				name: "Visually build APIs",
+				tiers: { Hobbyist: true, Pro: true, Startup: true },
 			},
 			{
-				name: "Export SQL queries",
-				tiers: { Hobbyist: true, Freelancer: true, Startup: true },
-			},
-			{
-				name: "Export CURL requests",
-				tiers: { Hobbyist: true, Freelancer: true, Startup: true },
-			},
-			{
-				name: "AI-powered React Fetch export",
-				tiers: {
-					Hobbyist: "5 AI calls/month",
-					Freelancer: "Unlimited",
-					Startup: "Unlimited",
-				},
-			},
-			{
-				name: "Endpoints",
+				name: "Number of Endpoints",
 				tiers: {
 					Hobbyist: "Up to 7",
-					Freelancer: "Unlimited",
+					Pro: "50",
 					Startup: "Unlimited",
 				},
-			},
-			{
-				name: "Supabase connections",
-				tiers: { Hobbyist: "1", Freelancer: "3", Startup: "5" },
-			},
-			{
-				name: "Flow visualisation",
-				tiers: { Hobbyist: "1", Freelancer: "Yes", Startup: "Yes" },
 			},
 			{
 				name: "Automated test runs",
 				tiers: {
-					Hobbyist: "3/month",
-					Freelancer: "Unlimited",
+					Hobbyist: "Monthly",
+					Pro: "Weekly",
+					Startup: "Daily",
+				},
+			},
+			{
+				name: "Export SQL queries",
+				tiers: { Hobbyist: false, Pro: true, Startup: true },
+			},
+			{
+				name: "Export CURL requests",
+				tiers: { Hobbyist: true, Pro: true, Startup: true },
+			},
+			{
+				name: "AI generated Frontend integrations",
+				tiers: {
+					Hobbyist: "5 AI calls/month",
+					Pro: "Unlimited",
 					Startup: "Unlimited",
 				},
 			},
 			{
-				name: "Schema/endpoint flow visualiser",
-				tiers: { Hobbyist: false, Freelancer: true, Startup: true },
+				name: "Supabase project connections",
+				tiers: { Hobbyist: "1", Pro: "3", Startup: "5" },
+			},
+			{
+				name: "Endpoint flow visualiser",
+				tiers: { Hobbyist: false, Pro: true, Startup: true },
+			},
+			{
+				name: "Schema visualiser",
+				tiers: { Hobbyist: false, Pro: true, Startup: true },
 			},
 			{
 				name: "Invite teammates",
 				tiers: {
 					Hobbyist: false,
-					Freelancer: "2 (Developer, QA)",
+					Pro: "2",
 					Startup: "10",
 				},
 			},
 			{
-				name: "Role-based access (Admin, QA, Dev)",
-				tiers: { Hobbyist: false, Freelancer: false, Startup: true },
+				name: "Role-based access (Admin, Dev, QA)",
+				tiers: { Hobbyist: false, Pro: false, Startup: true },
 			},
 		],
 	},
@@ -103,14 +103,16 @@ function classNames(...classes) {
 
 export default function Pricing() {
 	return (
-		<div className="bg-matteBlack br py-24 sm:py-32">
+		<div className="bg-matteBlack py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-8 lg:px-8">
 				<Section_Header
 					tagline="Pricing"
 					// title="Why burn $400/month on infra when $7 gets you all?"
 					title={`Stop burning $200 on infra. \n > npm uninstall express`}
 					aurora="> npm uninstall express"
-					description="Ditch servers, skip the boilerplate. Build production backends in minutes — not months."
+					// description="Ditch servers, skip the boilerplate. Build production backends in minutes — not months."
+					description="No more server setups or AWS bills. Just build and ship"
+					// description="Start your backend journey with $9 and zero config."
 				/>
 
 				{/* xs to lg */}
@@ -202,159 +204,97 @@ export default function Pricing() {
 				</div>
 
 				{/* laptops and up */}
-				<div className="isolate mt-20 hidden lg:block">
-					<div className="relative -mx-8">
-						{tiers.some((tier) => tier.mostPopular) ? (
-							<div className="absolute inset-x-4 inset-y-0 -z-10 flex">
-								<div
-									style={{
-										marginLeft: `${
-											(tiers.findIndex(
-												(tier) => tier.mostPopular
-											) +
-												1) *
-											25
-										}%`,
-									}}
-									aria-hidden="true"
-									className="flex w-1/4 px-4"
-								>
-									<div className="w-full rounded-t-xl border-x border-t border-white/10 bg-white/5" />
-								</div>
-							</div>
-						) : null}
-						<table className="w-full table-fixed border-separate border-spacing-x-8 text-left">
-							<caption className="sr-only">
-								Pricing plan comparison
-							</caption>
-							<colgroup>
-								<col className="w-1/4" />
-								<col className="w-1/4" />
-								<col className="w-1/4" />
-								<col className="w-1/4" />
-							</colgroup>
+				<div className="mt-20 hidden lg:block">
+					<div className="overflow-hidden rounded-lg border-0 border-white/10">
+						<table className="w-full">
 							<thead>
-								<tr>
-									<td />
+								<tr className=" my-6 ">
+									<th className="py-4  px-0  text-left text-sm font-semibold text-white">
+										<div className=" c text-6xl text-neutral-900/70 select-none" >thincrust</div>
+									</th>
 									{tiers.map((tier) => (
 										<th
 											key={tier.id}
-											scope="col"
-											className="px-6 bg-neutral-900 rounded-t-xl pt-6 xl:px-6 xl:pt-6"
+											className=" pl-6 text-center text-sm font-semibold text-white "
 										>
-											<div className="text-sm font-semibold leading-7 text-white">
-												{tier.name}
+											<div className="bg-gradient-to-b from-neutral-900 to-neutral-900/50 rounded-xl p-6">
+												<div className="mb-0">
+													{tier.name}
+												</div>
+												<div className="text-3xl font-bold mb-0">
+													{tier.priceMonthly}
+													<span className="text-sm font-normal">
+														{""}/ month
+													</span>
+												</div>
+												<button className="w-full mt-6 bg-indigo-500 hover:bg-indigo-600 text-white rounded-md px-4 py-2 text-sm font-semibold">
+													Buy plan
+												</button>
 											</div>
 										</th>
 									))}
 								</tr>
 							</thead>
-							<tbody>
+							<tbody className="">
 								<tr>
-									<th scope="row">
-										<span className="sr-only text-white">
-											Price
-										</span>
-									</th>
-									{tiers.map((tier) => (
-										<td
-											key={tier.id}
-											className="px-6 bg-neutral-900 rounded-b-xl pt-2 pb-6 xl:px-6"
-										>
-											<div className="flex items-baseline gap-x-1 text-white">
-												<span className="text-4xl font-bold">
-													{tier.priceMonthly}
-												</span>
-												<span className="text-sm font-semibold leading-6">
-													/ month
-												</span>
-											</div>
-											<div
-												// href={tier.href}
-												className="mt-4 block cursor-pointer bg-indigo-500 text-white rounded-md px-3 py-2 text-center text-sm font-semibold leading-6 focus-visible:outline-offset-2"
-											>
-												Buy plan
-											</div>
-										</td>
-									))}
+									<td className="invisible">...</td>
 								</tr>
-								{sections.map((section, sectionIdx) => (
-									<Fragment key={section.name}>
-										<tr>
-											<th
-												scope="colgroup"
-												colSpan={4}
-												className={classNames(
-													sectionIdx === 0
-														? "pt-8"
-														: "pt-16",
-													"pb-4 text-sm font-semibold leading-6 text-white"
-												)}
+							</tbody>
+							<tbody>
+								{sections[0].features.map((feature, index) => (
+									<tr
+										key={feature.name}
+										className={
+											index % 2 === 0
+												? "bg-neutral-900/30"
+												: " "
+										}
+									>
+										<td
+											className={`py-4 px-6 text-sm text-white font-medium ${
+												index % 2 === 0
+													? "rounded-l-lg"
+													: ""
+											}`}
+										>
+											{feature.name}
+										</td>
+										{tiers.map((tier, tierIndex) => (
+											<td
+												key={tier.id}
+												className={`py-4 px-6 text-center ${
+													index % 2 === 0 &&
+													tierIndex ===
+														tiers.length - 1
+														? "rounded-r-lg"
+														: ""
+												}`}
 											>
-												{section.name}
-												<div className="absolute inset-x-8 mt-4 h-px bg-white/10 rounded-t-xl" />
-											</th>
-										</tr>
-										{section.features.map((feature) => (
-											<tr key={feature.name}>
-												<th
-													scope="row"
-													className="py-4 text-sm font-normal leading-6 text-white"
-												>
-													{feature.name}
-													<div className="absolute inset-x-8 mt-4 h-px bg-white/5" />
-												</th>
-												{tiers.map((tier) => (
-													<td
-														key={tier.id}
-														className="px-6 py-4 xl:px-8"
-													>
-														{typeof feature.tiers[
-															tier.name
-														] === "string" ? (
-															<div className="text-center text-sm leading-6 text-gray-300">
-																{
-																	feature
-																		.tiers[
-																		tier
-																			.name
-																	]
-																}
-															</div>
-														) : (
-															<>
-																{feature.tiers[
-																	tier.name
-																] === true ? (
-																	<CheckIcon
-																		aria-hidden="true"
-																		className="mx-auto h-5 w-5 text-indigo-400"
-																	/>
-																) : (
-																	<MinusIcon
-																		aria-hidden="true"
-																		className="mx-auto h-5 w-5 text-gray-500"
-																	/>
-																)}
-
-																<span className="sr-only">
-																	{feature
-																		.tiers[
-																		tier
-																			.name
-																	] === true
-																		? "Included"
-																		: "Not included"}{" "}
-																	in{" "}
-																	{tier.name}
-																</span>
-															</>
-														)}
-													</td>
-												))}
-											</tr>
+												{typeof feature.tiers[
+													tier.name
+												] === "string" ? (
+													<span className="text-sm text-gray-300">
+														{
+															feature.tiers[
+																tier.name
+															]
+														}
+													</span>
+												) : feature.tiers[tier.name] ===
+												  true ? (
+													<CheckIcon
+														aria-hidden="true"
+														className="mx-auto h-5 w-5 text-indigo-400"
+													/>
+												) : (
+													<MinusIcon
+														aria-hidden="true"
+														className="mx-auto h-5 w-5 text-gray-500"
+													/>
+												)}
+											</td>
 										))}
-									</Fragment>
+									</tr>
 								))}
 							</tbody>
 						</table>
