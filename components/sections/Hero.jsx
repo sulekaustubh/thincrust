@@ -6,6 +6,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MorphingText } from "@/components/magicui/morphing-text";
 import { AuroraText } from "../magicui/aurora-text";
 import Tagline from "../texts/Tagline";
+import Section_Header from "../texts/Section_Header";
 
 const navigation = [
 	{ name: "Features", href: "#" },
@@ -225,15 +226,14 @@ export default function Hero() {
 				<div className="py-24 sm:py-32 lg:pb-40">
 					<div className="mx-auto max-w-7xl px-6 lg:px-8">
 						<div className="mx-auto max-w-3xl text-center">
-							<Tagline text="Supabase on steroids" />
-							{/* <div className="flex uppercase mx-auto text-xs font-medium text-indigo-400 bg-indigo-500/10 border w-fit border-indigo-400 rounded-full px-2 py-1.5 mb-2 tracking-wide items-center justify-center gap-2">
-								<p>Supabase on steroids</p>
-								{/* <p className="w-2 h-2 rounded-full bg-emerald-500" /> */}
-							{/* </div> */}
-							<h1 className="text-6xl font-outfit text-center font-semibold tracking-tight text-white">
-								Scalable APIs without writing a single line of{" "}
-								<AuroraText>backend</AuroraText> code
-							</h1>
+							
+							<Section_Header
+								tagline="Supabase on steroids"
+								title="Scalable APIs without writing a single line of backend code"
+								aurora="backend"
+								description="Skip the boilerplate. Connect supabase & go from DB to endpoints instantly."
+							/>
+							
 							<div className="text-8xl uppercase font-bold tracking-tight text-white relative">
 								{/* <MorphingText
 									texts={[
@@ -249,11 +249,7 @@ export default function Hero() {
 									className="text-8xl uppercase text-center font-bold tracking-tight text-white h-24 w-full"
 								/> */}
 							</div>
-							<h1 className="tracking-wider text-xl font-extralight mt-2 text-center text-white/95 ">
-								Skip the boilerplate. Connect supabase & go from
-								DB to endpoints instantly.
-								{/* Workflow so fast, it might just replace your dev stack ! */}
-							</h1>
+							{/* Workflow so fast, it might just replace your dev stack ! */}
 							{/* <p className="mt-6 text-lg leading-8 text-gray-300">
 								Create powerful, production-ready APIs in
 								minutes with zero code. ThinCrust handles your

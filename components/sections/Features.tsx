@@ -3,6 +3,7 @@
 import { AuroraText } from "../magicui/aurora-text";
 import * as Icons from "lucide-react";
 import Tagline from "../texts/Tagline";
+import Section_Header from "../texts/Section_Header";
 
 const features = [
 	{
@@ -56,26 +57,13 @@ export default function Features() {
 			<div className="absolute "></div>
 
 			<div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
-				<div className="mx-auto max-w-2xl text-center mb-12">
-					<Tagline text="Everything you need" />
+				<Section_Header
+					tagline="Everything you need"
+					title={`Dev workflow so fast ⚡️ \n - it feels like cheating`}
+					aurora="workflow"
+				/>
 
-					<h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-						Dev <AuroraText>workflow</AuroraText> so fast ⚡️
-						{/* <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-							never before
-						</span> */}
-					</h2>
-					<h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-						- it feels like cheating
-					</h2>
-					{/* <p className="mt-6 text-xl leading-8 text-gray-300 max-w-3xl mx-auto">
-						ThinCrust provides all the tools you need to create,
-						deploy, and manage production-ready APIs without writing
-						a single line of code.
-					</p> */}
-				</div>
-
-				<section className=" bg-[#0f0f0f]">
+				<section className=" mt-12 bg-[#0f0f0f]">
 					<div className=" mx-auto text-white grid grid-cols-2 gap-4">
 						<div className="">
 							<div className="grid grid-cols-2 auto-rows-[minmax(180px,_1fr)] gap-4">
@@ -146,7 +134,7 @@ export default function Features() {
 														"Auto-Scaling APIs" && (
 														<div className="h-[70%] w-full bg-[#A075F0] mb-4 rounded-lg"></div>
 													)}
-													
+
 													<p className="text-sm text-gray-400 mt-1">
 														{description}
 													</p>
