@@ -59,7 +59,7 @@ export default function Features() {
 			<div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
 				<Section_Header
 					tagline="Everything you need"
-					title={`Dev workflow so fast ⚡️ \n - it feels like cheating`}
+					title={`Dev workflow so fast⚡️ \n - it feels like cheating`}
 					aurora="workflow"
 				/>
 
