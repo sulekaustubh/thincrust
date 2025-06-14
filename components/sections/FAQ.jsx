@@ -1,50 +1,140 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import Section_Header from "../texts/Section_Header";
+
+// const faqs = [
+// 	{
+// 		question: "How does ThinCrust work with my existing Supabase project?",
+// 		answer: "ThinCrust connects directly to your Supabase database and lets you build sophisticated API endpoints visually. You can connect up to 5 Supabase projects (depending on your plan), and ThinCrust will read your table schemas to help you build complex queries with JOINs, filtering, and aggregations without writing SQL.",
+// 	},
+// 	// {
+// 	// 	question: "What makes ThinCrust different from basic API builders?",
+// 	// 	answer: "ThinCrust specializes in complex database operations. While other tools offer simple CRUD, we provide advanced query building with multi-table JOINs, complex filtering with AND/OR logic, aggregation functions, custom expressions, and real-time SQL preview. You can build queries that would normally require advanced SQL knowledge.",
+// 	// },
+// 	{
+// 		question: "Can I export my work and avoid vendor lock-in?",
+// 		answer: "Absolutely! ThinCrust generates clean SQL queries and CURL requests that you can export and use anywhere. You can also export frontend integration code powered by AI. This means you can always take your work with you or use ThinCrust as a development tool even if you host elsewhere.",
+// 	},
+// 	// {
+// 	// 	question: "What's included in the free Hobbyist plan?",
+// 	// 	answer: "The Hobbyist plan includes up to 7 endpoints, CURL request exports, 5 AI-generated frontend integrations per month, and connection to 1 Supabase project. It's perfect for personal projects, learning, and prototyping. No credit card required to get started.",
+// 	// },
+// 	{
+// 		question: "How sophisticated can my API endpoints be?",
+// 		answer: "Very sophisticated! You can build endpoints with multiple table JOINs (INNER, LEFT, RIGHT, FULL OUTER), complex WHERE conditions with grouping, aggregation functions (COUNT, SUM, AVG, etc.), custom field aliases, pagination, sorting, and dynamic parameters. Think of it as a visual SQL query builder that generates REST APIs.",
+// 	},
+// 	{
+// 		question: "Do you support team collaboration?",
+// 		answer: "Yes! Pro plans support up to 2 teammates, while Startup plans support up to 10. Startup plans also include role-based access control with Admin, Developer, and QA roles. You'll also get additional features like endpoint flow visualizer and schema visualizer for better team coordination.",
+// 	},
+// 	{
+// 		question: "What happens when I hit endpoint limits?",
+// 		answer: "You can upgrade anytime to get more endpoints. Hobbyist plans have 7 endpoints, Pro plans have 50, and Startup plans have unlimited endpoints. All your existing work is preserved when you upgrade, and you get additional features like SQL query exports and schema visualization tools.",
+// 	},
+// 	{
+// 		question: "How does the AI frontend integration feature work?",
+// 		answer: "Our AI analyzes your API endpoints and generates ready-to-use integration code for popular frontend frameworks. Hobbyist plans get 5 AI calls per month, while Pro and Startup plans get unlimited AI-generated integrations. This saves hours of writing fetch logic and state management code.",
+// 	},
+// 	{
+// 		question: "Can I test my endpoints before deploying?",
+// 		answer: "Yes! ThinCrust includes automated test runs - monthly for Hobbyist, weekly for Pro, and daily for Startup plans. You also get real-time query previews as you build, so you can see exactly what SQL will be generated before creating your endpoint.",
+// 	},
+// 	{
+// 		question: "Is ThinCrust suitable for production applications?",
+// 		answer: "Absolutely! ThinCrust is designed for production use. Your endpoints connect directly to your Supabase database with full security and performance optimization. Many users start with prototyping and then scale to production, taking advantage of the export features when needed.",
+// 	},
+// ];
 
 const faqs = [
 	{
-		question: "Do I need coding experience to use ThinCrust?",
-		answer: "Not at all! ThinCrust is designed for both technical and non-technical users. Our visual interface lets you build APIs by dragging and dropping components. However, if you want to customize or export code, having some technical knowledge is helpful.",
+		question: "Can Thincrust plug into my existing Supabase project?",
+		answer: "Absolutely. Just connect your Supabase URL, and Thincrust will auto-detect your schema. You can build complex APIs with joins, filters, and aggregations — without writing a single line of SQL.",
 	},
 	{
-		question: "How quickly can I deploy an API?",
-		answer: "You can have a working API deployed in minutes. Our platform automatically handles hosting, security, and scaling. Complex APIs with multiple tables and relationships typically take 30-60 minutes to set up and deploy.",
+		question: "Am I locked in forever if I use Thincrust?",
+		answer: "Nope. You can export your SQL queries, CURLs, and even AI-generated frontend code. Use Thincrust to build fast — host wherever you like.",
 	},
 	{
-		question: "What databases do you support?",
-		answer: "ThinCrust provides managed PostgreSQL databases by default. For enterprise customers, we also support connections to existing MySQL, PostgreSQL, and MongoDB databases. We're continuously adding support for more database types.",
+		question: "How powerful are these APIs really?",
+		answer: "Imagine building REST endpoints with nested joins, grouped filters, sort, pagination, and even aliases — visually. If SQL was a boss fight, Thincrust is your cheat code.",
 	},
 	{
-		question: "Can I export my APIs to my own infrastructure?",
-		answer: "Yes! One of our key features is code export. You can generate clean, production-ready code in Node.js, Python (FastAPI), or Go. This ensures you're never locked into our platform and can migrate whenever needed.",
+		question: "Can I work with my team?",
+		answer: "Totally. Pro lets you invite 2 teammates. Startup lets you invite up to 10 with proper roles like Admin, QA, and Dev. Share the flow, not the chaos.",
 	},
 	{
-		question: "How do you handle security and authentication?",
-		answer: "Security is built into every API by default. We provide JWT-based authentication, API key management, rate limiting, and encryption. Enterprise plans include SSO, advanced role-based access control, and compliance features for GDPR, HIPAA, and SOC 2.",
+		question: "What if I hit my endpoint limit?",
+		answer: "We won’t block your work. Just upgrade when you're ready. You keep everything, and your cap gets lifted instantly.",
 	},
 	{
-		question: "What happens if my app grows beyond the platform limits?",
-		answer: "ThinCrust is designed to scale with you. Our infrastructure auto-scales based on demand. If you need to migrate, our code export feature ensures a smooth transition. Many customers continue using ThinCrust even at enterprise scale due to the convenience and performance.",
+		question: "How does that AI frontend magic work?",
+		answer: "Hit 'Generate Fetch Code' — and our AI gives you clean, paste-ready frontend logic tailored to your endpoint. React hooks, axios, error handling — boom. Done.",
 	},
 	{
-		question: "Can I customize the generated APIs?",
-		answer: "Absolutely! You can customize everything from HTTP methods and endpoints to complex business logic using our visual workflow builder. For advanced customizations, you can add custom functions or export the code for manual modifications.",
+		question: "Can I test APIs before shipping them?",
+		answer: "Yes! We auto-run tests and show you the SQL behind every API before it’s even saved. Hobby users get monthly test runs, Pro weekly, Startup daily.",
 	},
 	{
-		question: "Do you offer support for teams and collaboration?",
-		answer: "Yes, our Pro and Enterprise plans include team collaboration features. Multiple developers can work on the same project with version control, commenting, and real-time collaboration. We also provide role-based permissions and project sharing.",
-	},
-	{
-		question: "What's included in the free plan?",
-		answer: "The free plan includes up to 3 APIs, 10,000 requests per month, 1GB database storage, and access to our visual builder. It's perfect for learning, prototyping, and small personal projects. No credit card required to get started.",
-	},
-	{
-		question: "How reliable is the hosting infrastructure?",
-		answer: "We guarantee 99.9% uptime with our enterprise-grade infrastructure. Your APIs run on a global CDN with automatic failover and redundancy. We provide real-time monitoring, automated backups, and 24/7 infrastructure monitoring.",
+		question: "Is this really safe for production apps?",
+		answer: "Yes. Your data stays on your Supabase instance. We just make the API-building part ridiculously easy and exportable. You can go from MVP to production without switching tools.",
 	},
 ];
+
+function AccordionItem({ faq, index, isOpen, onToggle }) {
+	const contentRef = useRef(null);
+	const [height, setHeight] = useState(0);
+
+	useEffect(() => {
+		if (contentRef.current) {
+			const contentHeight = contentRef.current.scrollHeight;
+			setHeight(isOpen ? contentHeight : 0);
+		}
+	}, [isOpen]);
+
+	return (
+		<div
+			className={`rounded-lg bg-neutral-900/50 backdrop-blur ring-1 ${
+				isOpen ? "ring-indigo-500/20" : "ring-neutral-900/50"
+			} overflow-hidden`}
+		>
+			<dt>
+				<button
+					className="flex cursor-pointer w-full items-center justify-between px-6 py-4 text-left transition-all duration-200 ease-out "
+					onClick={() => onToggle(index)}
+				>
+					<span className="text-base tracking-wide text-white/90">
+						{faq.question}
+					</span>
+					<span className="ml-6 flex h-7 items-center">
+						<ChevronDownIcon
+							className={`h-6 w-6 transform transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+								isOpen ? "rotate-180" : "rotate-0"
+							} text-gray-400`}
+							aria-hidden="true"
+						/>
+					</span>
+				</button>
+			</dt>
+			<dd
+				ref={contentRef}
+				style={{ height: `${height}px` }}
+				className="transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden"
+			>
+				<div
+					className={`px-6 pb-4 transition-opacity duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+						isOpen ? "opacity-100 delay-100" : "opacity-0"
+					}`}
+				>
+					<p className="text-base leading-7 text-gray-300">
+						{faq.answer}
+					</p>
+				</div>
+			</dd>
+		</div>
+	);
+}
 
 export default function FAQ() {
 	const [openIndex, setOpenIndex] = useState(null);
@@ -54,62 +144,23 @@ export default function FAQ() {
 	};
 
 	return (
-		<div className="bg-[#111010] py-24 sm:py-32">
+		<div className="bg-matteBlack py-24 sm:py-32">
 			<div className="mx-auto max-w-7xl px-6 lg:px-8">
-				<div className="mx-auto max-w-4xl text-center">
-					<h2 className="text-base font-semibold leading-7 text-indigo-400">
-						Support
-					</h2>
-					<p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-						Frequently asked questions
-					</p>
-					<p className="mt-6 text-lg leading-8 text-gray-300">
-						Have a different question and can't find the answer
-						you're looking for? Reach out to our support team by{" "}
-						<a
-							href="#"
-							className="font-semibold text-indigo-400 hover:text-indigo-300"
-						>
-							sending us an email
-						</a>{" "}
-						and we'll get back to you as soon as we can.
-					</p>
-				</div>
+				<Section_Header
+					className="opacity-90"
+					title={`Still got questions?💡`}
+					description="Shoot us an email if you don't find what you're looking for below."
+				/>
 				<div className="mx-auto mt-16 max-w-4xl">
 					<dl className="space-y-4">
 						{faqs.map((faq, index) => (
-							<div
+							<AccordionItem
 								key={index}
-								className="rounded-lg bg-gray-900/50 backdrop-blur ring-1 ring-gray-700/50"
-							>
-								<dt>
-									<button
-										className="flex w-full items-center justify-between px-6 py-4 text-left"
-										onClick={() => toggleFAQ(index)}
-									>
-										<span className="text-base font-semibold leading-7 text-white">
-											{faq.question}
-										</span>
-										<span className="ml-6 flex h-7 items-center">
-											<ChevronDownIcon
-												className={`h-6 w-6 transform transition-transform duration-200 ${
-													openIndex === index
-														? "rotate-180"
-														: "rotate-0"
-												} text-gray-400`}
-												aria-hidden="true"
-											/>
-										</span>
-									</button>
-								</dt>
-								{openIndex === index && (
-									<dd className="px-6 pb-4">
-										<p className="text-base leading-7 text-gray-300">
-											{faq.answer}
-										</p>
-									</dd>
-								)}
-							</div>
+								faq={faq}
+								index={index}
+								isOpen={openIndex === index}
+								onToggle={toggleFAQ}
+							/>
 						))}
 					</dl>
 				</div>

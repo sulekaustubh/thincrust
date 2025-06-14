@@ -1,13 +1,16 @@
-import React from 'react'
-import FooterBackground from "@/public/FooterBackground.png"
-import Image from 'next/image'
+import React from "react";
 
 function Footer2() {
-  return (
-    <div>
-        <Image className='w-full h-full object-cover blur-xs ' src={FooterBackground} alt="Footer Background" />
-    </div>
-  )
+	return (
+		<div className="bg-matteBlack c br ">
+			<div
+				className="striped-text text-[clamp(40px,24vw,280px)]"
+				data-text="thincrust"
+			>
+				<div className="striped-text__text">thincrust</div>
+			</div>
+		</div>
+	);
 }
 
-export default Footer2
+export default Footer2;

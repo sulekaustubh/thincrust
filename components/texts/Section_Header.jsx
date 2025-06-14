@@ -41,7 +41,7 @@ const Section_Header = ({
 	};
 
 	return (
-		<div className={`mx-auto max-w-3xl text-center ${className}`}>
+		<div className={`mx-auto select-none max-w-3xl text-center ${className}`}>
 			{tagline && <Tagline text={tagline} />}
 			{renderTitle()}
 			{description && (

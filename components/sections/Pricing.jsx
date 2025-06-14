@@ -209,8 +209,10 @@ export default function Pricing() {
 						<table className="w-full">
 							<thead>
 								<tr className=" my-6 ">
-									<th className="py-4  px-0  text-left text-sm font-semibold text-white">
-										<div className=" c text-6xl text-neutral-900/70 select-none" >thincrust</div>
+									<th className="py-4 relative px-0  text-left text-sm font-semibold text-white">
+										<div className=" c text-6xl text-neutral-800/30 select-none">
+											thincrust
+										</div>
 									</th>
 									{tiers.map((tier) => (
 										<th
