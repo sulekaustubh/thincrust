@@ -95,8 +95,8 @@ function AccordionItem({ faq, index, isOpen, onToggle }) {
 
 	return (
 		<div
-			className={`rounded-lg bg-neutral-900/50 backdrop-blur ring-1 ${
-				isOpen ? "ring-indigo-500/20" : "ring-neutral-900/50"
+			className={`rounded-lg transition-all duration-300 bg-neutral-900/50 backdrop-blur  ${
+				isOpen ? "border-l-3 border-indigo-400" : "ring-neutral-900/50"
 			} overflow-hidden`}
 		>
 			<dt>
@@ -104,7 +104,7 @@ function AccordionItem({ faq, index, isOpen, onToggle }) {
 					className="flex cursor-pointer w-full items-center justify-between px-6 py-4 text-left transition-all duration-200 ease-out "
 					onClick={() => onToggle(index)}
 				>
-					<span className="text-base tracking-wide text-white/90">
+					<span className="text-base tracking-wider text-white/90">
 						{faq.question}
 					</span>
 					<span className="ml-6 flex h-7 items-center">
@@ -127,7 +127,7 @@ function AccordionItem({ faq, index, isOpen, onToggle }) {
 						isOpen ? "opacity-100 delay-100" : "opacity-0"
 					}`}
 				>
-					<p className="text-base leading-7 text-gray-300">
+					<p className="text-base font-light leading-7 tracking-wide text-gray-500">
 						{faq.answer}
 					</p>
 				</div>
@@ -137,7 +137,7 @@ function AccordionItem({ faq, index, isOpen, onToggle }) {
 }
 
 export default function FAQ() {
-	const [openIndex, setOpenIndex] = useState(null);
+	const [openIndex, setOpenIndex] = useState(0);
 
 	const toggleFAQ = (index) => {
 		setOpenIndex(openIndex === index ? null : index);

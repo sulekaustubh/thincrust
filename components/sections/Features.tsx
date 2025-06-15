@@ -93,7 +93,7 @@ export default function Features() {
 													</div>
 													{title ===
 														"Visual API Builder" && (
-														<div className="h-[70%] w-full bg-[#A075F0] mb-4 rounded-lg"></div>
+														<div className="h-[70%] w-full bg-neutral-900 mb-4 rounded-lg"></div>
 													)}
 													<p className="text-sm text-gray-400 mt-1">
 														{description}
@@ -132,7 +132,7 @@ export default function Features() {
 													</div>
 													{title ===
 														"Auto-Scaling APIs" && (
-														<div className="h-[70%] w-full bg-[#A075F0] mb-4 rounded-lg"></div>
+														<div className="h-[70%] w-full bg-neutral-900 mb-4 rounded-lg"></div>
 													)}
 
 													<p className="text-sm text-gray-400 mt-1">

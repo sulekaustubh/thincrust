@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { CheckIcon, MinusIcon } from "@heroicons/react/20/solid";
 import Section_Header from "../texts/Section_Header";
+import { AnimatedShinyText } from "../magicui/animated-shiny-text";
 
 const tiers = [
 	{
@@ -210,8 +211,13 @@ export default function Pricing() {
 							<thead>
 								<tr className=" my-6 ">
 									<th className="py-4 relative px-0  text-left text-sm font-semibold text-white">
-										<div className=" c text-6xl text-neutral-800/30 select-none">
+										{/* <div className=" c text-6xl text-neutral-800/30 select-none">
 											thincrust
+										</div> */}
+										<div className="c">
+											<AnimatedShinyText className="text-6xl font-extralight  text-transparent  select-none ">
+												thincrust
+											</AnimatedShinyText>
 										</div>
 									</th>
 									{tiers.map((tier) => (

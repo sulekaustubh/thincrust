@@ -8,7 +8,7 @@ export default function CTA() {
 					// title={`From idea to backend \n in under 10 minutes.`}
 					title={`Serverless endpoints✨ connected directly to DB.`}
 					aurora="Serverless"
-					description={`No infra. No frameworks. No nonsense. That's Thincrust.`}
+					description={`No infra. No frameworks. Only Supabase and Thincrust.`}
 				/>
 				<div className=" space-x-6 c mt-12">
 					<div
