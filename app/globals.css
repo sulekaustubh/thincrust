@@ -143,6 +143,26 @@ pre {
 	.font-angel-demo {
 		font-family: "Angel Demo", sans-serif;
 	}
+
+	.font-playfair {
+		font-family: var(--font-playfair), serif;
+	}
+
+	.font-montserrat {
+		font-family: var(--font-montserrat), sans-serif;
+	}
+
+	.font-roboto {
+		font-family: var(--font-roboto), sans-serif;
+	}
+
+	.font-poppins {
+		font-family: var(--font-poppins), sans-serif;
+	}
+
+	.font-lora {
+		font-family: var(--font-lora), serif;
+	}
 }
 
 .bg-matteBlack {

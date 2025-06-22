@@ -15,7 +15,7 @@ function Footer2() {
 			{ name: "API Status", href: "#" },
 		],
 		company: [
-			{ name: "About", href: "#" },
+			{ name: "Aboutz", href: "#" },
 			{ name: "Blog", href: "#" },
 			{ name: "Jobs", href: "#" },
 			{ name: "Press", href: "#" },

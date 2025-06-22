@@ -1,9 +1,9 @@
 "use client";
 
-import { AuroraText } from "../magicui/aurora-text";
 import * as Icons from "lucide-react";
-import Tagline from "../texts/Tagline";
 import Section_Header from "../texts/Section_Header";
+import { ElementProps } from "@/lib/types";
+import { applyElementStyles, getElementText } from "@/lib/utils";
 
 const features = [
 	{
@@ -50,7 +50,17 @@ const features = [
 	},
 ];
 
-export default function Features() {
+interface FeaturesProps {
+	sectionId?: string;
+	elementProps?: Record<string, ElementProps>;
+	selectedElementPath?: string | null;
+}
+
+export default function Features({
+	sectionId,
+	elementProps = {},
+	selectedElementPath,
+}: FeaturesProps) {
 	return (
 		<div className="bg-matteBlack py-24 sm:py-32 relative overflow-hidden">
 			{/* Background gradient */}
@@ -70,33 +80,91 @@ export default function Features() {
 								{features
 									.slice(0, 3)
 									.map(
-										({
-											icon,
-											title,
-											description,
-											className,
-										}) => {
+										(
+											{
+												icon,
+												title,
+												description,
+												className,
+											},
+											index
+										) => {
 											const LucideIcon = Icons[
 												icon as keyof typeof Icons
-											] as React.ComponentType<any>;
+											] as React.ComponentType<
+												Record<string, unknown>
+											>;
+
+											const elementPath = `feature-${index}`;
+											const isSelected =
+												selectedElementPath ===
+												`${sectionId}.${elementPath}`;
 
 											return (
 												<div
 													key={title}
-													className={`bg-[#141414] rounded-2xl p-6 shadow-sm border border-white/5 hover:border-[#A075F0]/50 transition duration-300 ${className}`}
+													data-element-path={
+														elementPath
+													}
+													className={`${applyElementStyles(
+														`bg-[#141414] rounded-2xl p-6 shadow-sm border border-white/5 hover:border-[#A075F0]/50 transition duration-300 ${className}`,
+														elementProps[
+															elementPath
+														]
+													)} ${
+														isSelected
+															? "selected-element"
+															: ""
+													}`}
 												>
 													<div className="flex space-x-3 ">
 														<LucideIcon className="h-6 w-6 text-[#A075F0] mb-4" />
-														<h3 className="text-lg font-semibold text-white">
-															{title}
+														<h3
+															data-element-path={`feature-title-${index}`}
+															className={`${applyElementStyles(
+																"text-lg font-semibold text-white",
+																elementProps[
+																	`feature-title-${index}`
+																]
+															)} ${
+																selectedElementPath ===
+																`${sectionId}.feature-title-${index}`
+																	? "selected-element"
+																	: ""
+															}`}
+														>
+															{getElementText(
+																title,
+																elementProps[
+																	`feature-title-${index}`
+																]
+															)}
 														</h3>
 													</div>
 													{title ===
 														"Visual API Builder" && (
 														<div className="h-[70%] w-full bg-neutral-900 mb-4 rounded-lg"></div>
 													)}
-													<p className="text-sm text-gray-400 mt-1">
-														{description}
+													<p
+														data-element-path={`feature-desc-${index}`}
+														className={`${applyElementStyles(
+															"text-sm text-gray-400 mt-1",
+															elementProps[
+																`feature-desc-${index}`
+															]
+														)} ${
+															selectedElementPath ===
+															`${sectionId}.feature-desc-${index}`
+																? "selected-element"
+																: ""
+														}`}
+													>
+														{getElementText(
+															description,
+															elementProps[
+																`feature-desc-${index}`
+															]
+														)}
 													</p>
 												</div>
 											);
@@ -109,25 +177,66 @@ export default function Features() {
 								{features
 									.slice(-3)
 									.map(
-										({
-											icon,
-											title,
-											description,
-											className,
-										}) => {
+										(
+											{
+												icon,
+												title,
+												description,
+												className,
+											},
+											index
+										) => {
 											const LucideIcon = Icons[
 												icon as keyof typeof Icons
-											] as React.ComponentType<any>;
+											] as React.ComponentType<
+												Record<string, unknown>
+											>;
+
+											const featureIndex = index + 3; // Offset for second group
+											const elementPath = `feature-${featureIndex}`;
+											const isSelected =
+												selectedElementPath ===
+												`${sectionId}.${elementPath}`;
 
 											return (
 												<div
 													key={title}
-													className={`bg-[#141414] rounded-2xl p-6 shadow-sm border border-white/5 hover:border-[#A075F0]/50 transition duration-300 ${className}`}
+													data-element-path={
+														elementPath
+													}
+													className={`${applyElementStyles(
+														`bg-[#141414] rounded-2xl p-6 shadow-sm border border-white/5 hover:border-[#A075F0]/50 transition duration-300 ${className}`,
+														elementProps[
+															elementPath
+														]
+													)} ${
+														isSelected
+															? "selected-element"
+															: ""
+													}`}
 												>
 													<div className="flex space-x-3 ">
 														<LucideIcon className="h-6 w-6 text-[#A075F0] mb-4" />
-														<h3 className="text-lg font-semibold text-white">
-															{title}
+														<h3
+															data-element-path={`feature-title-${featureIndex}`}
+															className={`${applyElementStyles(
+																"text-lg font-semibold text-white",
+																elementProps[
+																	`feature-title-${featureIndex}`
+																]
+															)} ${
+																selectedElementPath ===
+																`${sectionId}.feature-title-${featureIndex}`
+																	? "selected-element"
+																	: ""
+															}`}
+														>
+															{getElementText(
+																title,
+																elementProps[
+																	`feature-title-${featureIndex}`
+																]
+															)}
 														</h3>
 													</div>
 													{title ===
@@ -135,8 +244,26 @@ export default function Features() {
 														<div className="h-[70%] w-full bg-neutral-900 mb-4 rounded-lg"></div>
 													)}
 
-													<p className="text-sm text-gray-400 mt-1">
-														{description}
+													<p
+														data-element-path={`feature-desc-${featureIndex}`}
+														className={`${applyElementStyles(
+															"text-sm text-gray-400 mt-1",
+															elementProps[
+																`feature-desc-${featureIndex}`
+															]
+														)} ${
+															selectedElementPath ===
+															`${sectionId}.feature-desc-${featureIndex}`
+																? "selected-element"
+																: ""
+														}`}
+													>
+														{getElementText(
+															description,
+															elementProps[
+																`feature-desc-${featureIndex}`
+															]
+														)}
 													</p>
 												</div>
 											);
@@ -144,30 +271,6 @@ export default function Features() {
 									)}
 							</div>
 						</div>
-						{/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 auto-rows-[minmax(180px,_1fr)] gap-6">
-							{features2.map(
-								({ icon, title, description, className }) => {
-									const LucideIcon = Icons[
-										icon as keyof typeof Icons
-									] as React.ComponentType<any>;
-
-									return (
-										<div
-											key={title}
-											className={`bg-[#141414] rounded-2xl p-6 shadow-sm border border-white/5 hover:border-[#A075F0]/50 transition ${className}`}
-										>
-											<LucideIcon className="h-6 w-6 text-[#A075F0] mb-4" />
-											<h3 className="text-lg font-semibold text-white">
-												{title}
-											</h3>
-											<p className="text-sm text-gray-400 mt-1">
-												{description}
-											</p>
-										</div>
-									);
-								}
-							)}
-						</div> */}
 					</div>
 				</section>
 			</div>

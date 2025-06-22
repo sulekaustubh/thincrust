@@ -79,10 +79,11 @@ export default function BuilderLayout({ children }) {
 			setActiveTab("apis");
 		} else if (pathname.includes("/create-endpoint")) {
 			setActiveTab("create-endpoint");
-		} else {
-			// Default redirect to tables if on base /builder route
+		} else if (pathname === "/builder") {
+			// Only redirect if on exact /builder route, not dynamic routes like /builder/[projectId]
 			router.push("/builder/tables");
 		}
+		// Don't redirect for other routes like /builder/[projectId] (landing page builder)
 	}, [pathname, router]);
 
 	const handleNavigation = (item) => {
@@ -94,7 +95,7 @@ export default function BuilderLayout({ children }) {
 		<div className="min-h-screen bg-gray-50">
 			<div className="flex">
 				{/* Persistent Sidebar */}
-				<div className="w-48 bg-white shadow-sm border-r border-gray-200 fixed h-full">
+				{/* <div className="w-48 bg-white shadow-sm border-r border-gray-200 fixed h-full">
 					<div className="p-6">
 						<h1 className="text-lg font-bold text-gray-900">
 							Thincrust
@@ -135,11 +136,11 @@ export default function BuilderLayout({ children }) {
 							})}
 						</div>
 					</nav>
-				</div>
+				</div> */}
 
 				{/* Main Content Area */}
-				<div className="flex-1 ml-48">
-					<div className="p-3">{children}</div>
+				<div className="w-full">
+					<div className="">{children}</div>
 				</div>
 			</div>
 		</div>
