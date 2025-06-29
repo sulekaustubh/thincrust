@@ -2,227 +2,152 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
 import { randomUUID } from "crypto";
-import { extractAudio } from "@/app/utils/ffmpeg";
+import {
+	extractAudio,
+	burnSubtitlesWithStyle,
+	SubtitleStyleOptions,
+} from "@/app/utils/ffmpeg";
 import { transcribeAudio, convertVerboseJsonToSrt } from "@/app/utils/lemonfox";
-import { burnSubtitlesWithFilter, cleanupTempFiles } from "@/app/utils/ffmpeg";
-import { debugEnvironment } from "@/app/debug-env";
+import { isDebugMode, getBaseUrl } from "@/app/debug-env";
 
-// Ensure temp directory exists
-const ensureTempDir = () => {
-	const tempDir = path.join(process.cwd(), "temp");
-	if (!fs.existsSync(tempDir)) {
-		fs.mkdirSync(tempDir, { recursive: true });
-	}
-	return tempDir;
-};
+// Global settings
+const TEMP_DIR = path.join(process.cwd(), "temp");
 
-export async function POST(req: NextRequest) {
+// Create directory if it doesn't exist
+async function ensureTempDir() {
 	try {
-		// Run environment diagnostics
-		console.log("Running environment diagnostics...");
-		const diagnostics = debugEnvironment();
-
-		// Check API key first
-		const apiKey =
-			process.env.LEMONFOX_API_KEY ||
-			process.env.NEXT_PUBLIC_LEMONFOX_API_KEY;
-		if (!apiKey) {
-			console.error("API key is missing");
-			return NextResponse.json(
-				{
-					error: "Configuration error",
-					details:
-						"API key is not set. Please check your environment variables.",
-				},
-				{ status: 500 }
-			);
+		if (!fs.existsSync(TEMP_DIR)) {
+			fs.mkdirSync(TEMP_DIR, { recursive: true });
 		}
-		console.log("API key check passed"); // Debug log
+	} catch (error) {
+		console.error("Error creating temp directory:", error);
+	}
+}
 
-		const tempDir = ensureTempDir();
-		console.log("Temp directory:", tempDir); // Debug log
+// Handle file upload and process video
+export async function POST(request: NextRequest) {
+	console.log("Received process request");
 
-		const tempFiles = [];
+	try {
+		await ensureTempDir();
 
-		// 1. Save uploaded video file
-		const uuid = randomUUID();
-		const videoPath = path.join(tempDir, `${uuid}.mp4`);
-		tempFiles.push(videoPath);
+		// Get form data
+		const formData = await request.formData();
+		const videoFile = formData.get("video") as File;
+		const language = (formData.get("language") as string) || "english";
 
-		try {
-			// Store incoming file
-			const arrayBuffer = await req.arrayBuffer();
-			const buffer = Buffer.from(arrayBuffer);
-			fs.writeFileSync(videoPath, buffer);
-			console.log("Video saved to:", videoPath); // Debug log
-		} catch (writeError) {
-			console.error("Error writing file:", writeError);
-			return NextResponse.json(
-				{
-					error: "File write error",
-					details: `Could not save uploaded file: ${
-						writeError instanceof Error
-							? writeError.message
-							: String(writeError)
-					}`,
-				},
-				{ status: 500 }
-			);
-		}
+		// Get and parse subtitle styles
+		let subtitleStyles: SubtitleStyleOptions = {
+			fontColor: "white", // Default to yellow for better visibility
+			fontSize: 30,
+			borderWidth: 2.5,
+			position: "bottom",
+			boxOpacity: 20,
+		};
 
-		// 2. Extract audio from video
-		console.log("Extracting audio from video");
-		let audioPath;
-		try {
-			audioPath = await extractAudio(videoPath);
-			tempFiles.push(audioPath);
-			console.log("Audio extracted to:", audioPath); // Debug log
-		} catch (extractError) {
-			console.error("Error extracting audio:", extractError);
-			return NextResponse.json(
-				{
-					error: "Audio extraction failed",
-					details: `Could not extract audio: ${
-						extractError instanceof Error
-							? extractError.message
-							: String(extractError)
-					}`,
-				},
-				{ status: 500 }
-			);
-		}
-
-		// 3. Get transcription from Lemonfox API
-		console.log("Sending audio to Lemonfox API");
-		let transcription;
-		try {
-			// Explicitly request verbose_json format
-			transcription = await transcribeAudio(
-				audioPath,
-				"english",
-				"verbose_json"
-			);
-
-			// Debug: Check if we received word-level timestamps
-			const hasWords =
-				transcription.segments &&
-				transcription.segments.length > 0 &&
-				transcription.segments[0].words &&
-				Array.isArray(transcription.segments[0].words);
-
-			console.log(
-				`Transcription received successfully. Has word timestamps: ${
-					hasWords ? "Yes" : "No"
-				}`
-			);
-
-			// If no words found, log the structure
-			if (!hasWords) {
-				console.log(
-					"Response format structure:",
-					JSON.stringify(Object.keys(transcription), null, 2)
-				);
-				if (
-					transcription.segments &&
-					transcription.segments.length > 0
-				) {
-					console.log(
-						"First segment structure:",
-						JSON.stringify(
-							Object.keys(transcription.segments[0]),
-							null,
-							2
-						)
-					);
-				}
+		const stylesJson = formData.get("subtitleStyles") as string;
+		if (stylesJson) {
+			try {
+				const parsedStyles = JSON.parse(stylesJson);
+				subtitleStyles = { ...subtitleStyles, ...parsedStyles };
+				console.log("Using custom subtitle styles:", subtitleStyles);
+			} catch (error) {
+				console.error("Error parsing subtitle styles:", error);
 			}
-		} catch (transcribeError) {
-			console.error("Error transcribing audio:", transcribeError);
+		}
+
+		if (!videoFile) {
 			return NextResponse.json(
-				{
-					error: "Transcription failed",
-					details: `API error: ${
-						transcribeError instanceof Error
-							? transcribeError.message
-							: String(transcribeError)
-					}`,
-				},
-				{ status: 500 }
+				{ details: "No video file provided" },
+				{ status: 400 }
 			);
 		}
 
-		// 4. Convert to SRT format and save file
-		console.log("Converting to SRT format");
-		let srtPath;
-		try {
-			const srtContent = convertVerboseJsonToSrt(transcription);
-			srtPath = path.join(tempDir, `${uuid}.srt`);
-			tempFiles.push(srtPath);
-			fs.writeFileSync(srtPath, srtContent);
-			console.log("SRT file created at:", srtPath); // Debug log
+		// Generate unique ID for this processing job
+		const jobId = randomUUID();
+		console.log(`Processing job ${jobId}`);
 
-			// Write the raw transcription to a file for debugging
-			const debugPath = path.join(tempDir, `${uuid}_transcription.json`);
-			fs.writeFileSync(debugPath, JSON.stringify(transcription, null, 2));
-			console.log("Debug transcription saved to:", debugPath);
-		} catch (srtError) {
-			console.error("Error creating SRT file:", srtError);
-			return NextResponse.json(
-				{
-					error: "SRT conversion failed",
-					details: `Could not create subtitles file: ${
-						srtError instanceof Error
-							? srtError.message
-							: String(srtError)
-					}`,
-				},
-				{ status: 500 }
+		// Set paths
+		const videoPath = path.join(TEMP_DIR, `${jobId}.mp4`);
+		const audioPath = path.join(TEMP_DIR, `${jobId}.mp3`);
+		const srtPath = path.join(TEMP_DIR, `${jobId}.srt`);
+		const subtitledVideoPath = path.join(
+			TEMP_DIR,
+			`${jobId}_subtitled.mp4`
+		);
+		const transcriptionJsonPath = path.join(
+			TEMP_DIR,
+			`${jobId}_transcription.json`
+		);
+
+		// Save uploaded video
+		const videoBuffer = Buffer.from(await videoFile.arrayBuffer());
+		fs.writeFileSync(videoPath, videoBuffer);
+		console.log(`Saved video to ${videoPath}`);
+
+		// Extract audio from video
+		console.log("Extracting audio...");
+		await extractAudio(videoPath);
+		console.log(`Audio extracted to ${audioPath}`);
+
+		// Transcribe audio with word-level timestamps
+		console.log(`Transcribing audio in ${language}...`);
+		const transcription = await transcribeAudio(
+			audioPath,
+			language,
+			"verbose_json"
+		);
+
+		// Save transcription for debugging
+		if (isDebugMode()) {
+			fs.writeFileSync(
+				transcriptionJsonPath,
+				JSON.stringify(transcription, null, 2)
 			);
+			console.log(`Saved transcription to ${transcriptionJsonPath}`);
 		}
 
-		// 5. Burn subtitles into video
-		console.log("Adding subtitles to video");
-		let outputPath;
-		try {
-			outputPath = await burnSubtitlesWithFilter(videoPath, srtPath);
-			console.log("Subtitles added, output at:", outputPath); // Debug log
-		} catch (burnError) {
-			console.error("Error burning subtitles:", burnError);
-			return NextResponse.json(
-				{
-					error: "Subtitle burning failed",
-					details: `Could not add subtitles to video: ${
-						burnError instanceof Error
-							? burnError.message
-							: String(burnError)
-					}`,
-				},
-				{ status: 500 }
-			);
-		}
+		// Generate SRT file from transcription
+		console.log("Generating subtitles...");
+		const srtContent = convertVerboseJsonToSrt(transcription);
+		fs.writeFileSync(srtPath, srtContent);
+		console.log(`Subtitles generated to ${srtPath}`);
 
-		// 6. Return output path for client-side video playing
-		const outputFileName = path.basename(outputPath);
-		const videoUrl = `/api/video/${outputFileName}`;
-		console.log("Process completed successfully, video URL:", videoUrl); // Debug log
+		// Add subtitles to the video with enhanced styling
+		console.log("Adding subtitles with custom styling...");
+		console.log("Subtitle styles:", subtitleStyles);
+		const outputPath = await burnSubtitlesWithStyle(
+			videoPath,
+			srtPath,
+			subtitleStyles
+		);
+		console.log(`Subtitled video saved to ${outputPath}`);
 
-		// Cleanup temporary files (keep the output video)
-		// We're commenting this out for now to avoid cleaning up files too early
-		// cleanupTempFiles([videoPath, audioPath, srtPath]);
+		// Get base URL for the video
+		const baseUrl = getBaseUrl(request);
+		const videoUrl = `${baseUrl}/api/video/${jobId}_subtitled.mp4`;
 
 		return NextResponse.json({
-			success: true,
 			videoUrl,
-			fileName: outputFileName,
-			videoId: uuid,
+			details: "Video processed successfully",
 		});
 	} catch (error) {
-		console.error("Unhandled error during processing:", error);
+		console.error("Error processing video:", error);
+
+		// Try to stringify error object to get a better error message
+		let errorMessage = "Unknown error";
+		try {
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			} else {
+				errorMessage = JSON.stringify(error);
+			}
+		} catch (e) {
+			errorMessage = "Could not stringify error";
+		}
+
 		return NextResponse.json(
-			{
-				error: "Processing failed",
-				details: error instanceof Error ? error.message : String(error),
-			},
+			{ details: `Error processing video: ${errorMessage}` },
 			{ status: 500 }
 		);
 	}

@@ -2,6 +2,9 @@
 
 import React, { useState, useRef } from "react";
 import ProgressBar from "./ProgressBar";
+import LanguageSelector, { SUPPORTED_LANGUAGES } from "./LanguageSelector";
+import SubtitleStyleSelector from "./SubtitleStyleSelector";
+import { SubtitleStyleOptions } from "@/app/utils/ffmpeg";
 
 interface VideoUploadProps {
 	onUploadComplete: (videoUrl: string) => void;
@@ -15,6 +18,14 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadComplete }) => {
 	const [progress, setProgress] = useState(0);
 	const [status, setStatus] = useState("");
 	const [error, setError] = useState<string | null>(null);
+	const [language, setLanguage] = useState<string>("english");
+	const [subtitleStyles, setSubtitleStyles] = useState<SubtitleStyleOptions>({
+		position: "center",
+		fontSize: 30,
+		fontColor: "white",
+		borderWidth: 2.5,
+		boxOpacity: 20,
+	});
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,14 +98,22 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadComplete }) => {
 			setStatus("Uploading video...");
 			setError(null);
 
-			// Step 1: Upload the video and process
+			// Create form data with all our settings
+			const formData = new FormData();
+			formData.append("video", file);
+			formData.append("language", language);
+			formData.append("subtitleStyles", JSON.stringify(subtitleStyles));
+
 			setProgress(10);
-			setStatus("Processing video...");
+			setStatus(`Processing video with ${language} transcription...`);
 
 			console.log("Sending file to API for processing:", file.name);
+			console.log("Using language:", language);
+			console.log("Using subtitle styles:", subtitleStyles);
+
 			const response = await fetch("/api/process", {
 				method: "POST",
-				body: file,
+				body: formData,
 			});
 
 			// Try to parse the response as JSON, but handle the case where it might not be JSON
@@ -133,7 +152,12 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadComplete }) => {
 			}
 
 			setProgress(50);
-			setStatus("Transcribing audio...");
+			setStatus(
+				`Transcribing audio in ${
+					SUPPORTED_LANGUAGES.find((l) => l.code === language)
+						?.displayName || language
+				}...`
+			);
 
 			// Wait for processing to complete
 			await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -186,6 +210,19 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadComplete }) => {
 
 	return (
 		<div className="w-full max-w-md mx-auto bg-white rounded-lg shadow p-6">
+			{/* Language selection */}
+			<LanguageSelector
+				selectedLanguage={language}
+				onLanguageChange={setLanguage}
+			/>
+
+			{/* Subtitle style options */}
+			<SubtitleStyleSelector
+				styles={subtitleStyles}
+				onStyleChange={setSubtitleStyles}
+			/>
+
+			{/* File upload area */}
 			{!file ? (
 				<div
 					className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 cursor-pointer transition-all"
