@@ -1,40 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Video Subtitler (Lemonfox.ai Integration)
 
-## Getting Started
+A simple web application that allows users to upload short videos, automatically transcribe the audio using Lemonfox.ai API, and burn subtitles directly into the video.
 
-First, run the development server:
+## Features
+
+-   Upload MP4 videos (up to 30 seconds)
+-   Automatic audio extraction using FFmpeg
+-   Transcription using Lemonfox.ai API (Whisper-compatible)
+-   Subtitle burning directly into the video
+-   Video preview with download option
+-   Simple, clean UI built with Next.js and Tailwind CSS
+
+## Technical Stack
+
+-   **Frontend**: Next.js with React and Tailwind CSS
+-   **Backend**: Next.js API routes
+-   **Media Processing**: FFmpeg for audio extraction and subtitle burning
+-   **Transcription**: Lemonfox.ai API
+
+## Setup
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/video-subtitler.git
+cd video-subtitler
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up your environment variables:
+
+    - Create a `.env.local` file in the root directory
+    - Add your Lemonfox.ai API key:
+        ```
+        LEMONFOX_API_KEY=your_api_key_here
+        ```
+
+4. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-   `POST /api/process` - Main endpoint for end-to-end processing
+-   `GET /api/video/[filename]` - Endpoint for serving processed videos
 
-## Learn More
+## Workflow
 
-To learn more about Next.js, take a look at the following resources:
+1. User uploads an MP4 video
+2. Server extracts audio using FFmpeg
+3. Audio is sent to Lemonfox.ai API for transcription
+4. Transcription is converted to SRT format
+5. FFmpeg burns subtitles into the original video
+6. User can preview and download the subtitled video
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Requirements
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+-   Node.js 18+
+-   FFmpeg installed on the server
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+MIT
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
 
-
-<!-- so i am trying to build a nocode API builder SaaS/BaaS platform that lets user build endpoints rapidly. these endpoints are already hosted and deployed. user does not have to worry about db instance and hosting, server deployments. they dont have to write code in node/express as well. everything here is UI based. they can use our UI to create tables, write queries, etc.
-Help me build the entire landing page for this platform but first lets just start with Hero section. Think carefully what the UI would look like. I need a clean elegant UI. My primary users might be developers or maybe be non-tech people who are looking for some nocode backend solutions. i have bought domain "thincrust.io" for this. you may take inspiration from other saas solutions for this hero section. I am attaching 3 screenshots below for inspiration. You are allowed to even literally copy and mix any designs that you see fit. -->
+Created with Next.js and Tailwind CSS

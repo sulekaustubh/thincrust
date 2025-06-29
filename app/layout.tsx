@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
+// Server-only code runs at build time and doesn't affect client-side bundle
+import { setupApplication } from "./utils/setup";
+
+// Run setup on server-side only
+if (typeof window === "undefined") {
+	setupApplication();
+}
 
 export const metadata: Metadata = {
-	title: "Next.js App",
-	description: "A simple Next.js application",
+	title: "Video Subtitler - Lemonfox.ai",
+	description: "Add subtitles to videos using Lemonfox.ai speech-to-text API",
 };
 
 export default function RootLayout({
