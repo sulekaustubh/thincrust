@@ -50,7 +50,7 @@ export const RemotionVideo = (props) => {
 
 	// Default caption style if none is provided
 	const defaultCaptionStyle = {
-		classNames: "text-blue-300 text-shadow-lg text-6xl",
+		classNames: "text-yellow-300 text-shadow-lg text-6xl",
 		containerStyle: {
 			bottom: "20%",
 			top: "auto",

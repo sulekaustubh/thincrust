@@ -161,7 +161,7 @@ export const StyledWordGroup = ({
 			avgScore={avgScore}
 			frame={frame}
 			fps={fps}
-			classNames={`text-center w-full text-blue-300 text-shadow font-bold ${classNames}`}
+			classNames={`text-center w-full text-yellow-300 text-shadow font-bold ${classNames}`}
 			style={{
 				padding: "10px",
 				lineHeight: "1.3",

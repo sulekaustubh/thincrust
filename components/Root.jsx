@@ -24,7 +24,7 @@ export const RemotionRoot = () => {
 					words,
 					// Include captionStyle with default values
 					captionStyle: {
-						classNames: "text-blue-300 text-shadow-lg text-6xl",
+						classNames: "text-yellow-300 text-shadow-lg text-6xl",
 						containerStyle: { bottom: "20%", top: "auto" },
 					},
 				}}
