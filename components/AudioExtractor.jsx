@@ -81,11 +81,17 @@ const FFmpegConfig = {
 
 export default function AudioExtractor() {
 	const [audioUrl, setAudioUrl] = useState(null);
+	const [audioBlob, setAudioBlob] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [ffmpeg, setFfmpeg] = useState(null);
 	const [loadingStatus, setLoadingStatus] = useState("");
 	const [errorMsg, setErrorMsg] = useState("");
 	const [loadingProgress, setLoadingProgress] = useState(0);
+	const [transcribing, setTranscribing] = useState(false);
+	const [language, setLanguage] = useState("english");
+	const [speakerLabels, setSpeakerLabels] = useState(false);
+	const [prompt, setPrompt] = useState("");
+	const [transcriptionResult, setTranscriptionResult] = useState(null);
 	const ffmpegRef = useRef(null);
 	const isMounted = useRef(true);
 
@@ -211,7 +217,9 @@ export default function AudioExtractor() {
 		console.log("Processing file:", file.name);
 		setLoading(true);
 		setAudioUrl(null);
+		setAudioBlob(null);
 		setErrorMsg("");
+		setTranscriptionResult(null);
 		setLoadingStatus("Starting audio extraction...");
 
 		try {
@@ -252,12 +260,53 @@ export default function AudioExtractor() {
 			const url = URL.createObjectURL(blob);
 			console.log("Audio extraction complete");
 			setAudioUrl(url);
+			setAudioBlob(blob);
 			setLoadingStatus("");
 		} catch (err) {
 			console.error("Audio extraction error:", err);
 			setErrorMsg(`Failed to extract audio: ${err.message}`);
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const handleTranscribe = async () => {
+		if (!audioBlob) {
+			setErrorMsg("No audio available to transcribe");
+			return;
+		}
+
+		setTranscribing(true);
+		setErrorMsg("");
+		setTranscriptionResult(null);
+
+		try {
+			// Create form data for the API request
+			const formData = new FormData();
+			formData.append("file", audioBlob, "audio.mp3");
+			formData.append("language", language);
+			formData.append("speaker_labels", speakerLabels ? "true" : "false");
+			if (prompt) formData.append("prompt", prompt);
+
+			// Send to our API route
+			const response = await fetch("/api/transcribe", {
+				method: "POST",
+				body: formData,
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || "Transcription failed");
+			}
+
+			const result = await response.json();
+			console.log("Transcription result:", result);
+			setTranscriptionResult(result);
+		} catch (err) {
+			console.error("Transcription error:", err);
+			setErrorMsg(`Transcription failed: ${err.message}`);
+		} finally {
+			setTranscribing(false);
 		}
 	};
 
@@ -328,13 +377,95 @@ export default function AudioExtractor() {
 						/>
 						Your browser does not support the audio element.
 					</audio>
-					<a
-						href={audioUrl}
-						download="extracted_audio.mp3"
-						className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded inline-block"
-					>
-						Download MP3
-					</a>
+					<div className="flex space-x-2">
+						<a
+							href={audioUrl}
+							download="extracted_audio.mp3"
+							className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded inline-block"
+						>
+							Download MP3
+						</a>
+
+						<button
+							onClick={handleTranscribe}
+							disabled={transcribing}
+							className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded inline-block disabled:bg-gray-400"
+						>
+							{transcribing
+								? "Transcribing..."
+								: "Generate Transcript"}
+						</button>
+					</div>
+
+					{/* Transcription options */}
+					<div className="mt-4">
+						<h3 className="font-medium mb-2">
+							Transcription Options
+						</h3>
+
+						<div className="mb-3">
+							<label className="block text-sm font-medium mb-1">
+								Language
+							</label>
+							<select
+								value={language}
+								onChange={(e) => setLanguage(e.target.value)}
+								disabled={transcribing}
+								className="w-full border border-gray-300 rounded-lg p-2.5"
+							>
+								<option value="english">English</option>
+								<option value="spanish">Spanish</option>
+								<option value="french">French</option>
+								<option value="german">German</option>
+								<option value="chinese">Chinese</option>
+								<option value="japanese">Japanese</option>
+								<option value="auto">Auto Detect</option>
+							</select>
+						</div>
+
+						<div className="mb-3">
+							<label className="flex items-center space-x-2">
+								<input
+									type="checkbox"
+									checked={speakerLabels}
+									onChange={(e) =>
+										setSpeakerLabels(e.target.checked)
+									}
+									disabled={transcribing}
+									className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+								/>
+								<span className="text-sm">
+									Enable Speaker Labels
+								</span>
+							</label>
+						</div>
+
+						<div className="mb-3">
+							<label className="block text-sm font-medium mb-1">
+								Prompt (Optional)
+							</label>
+							<input
+								type="text"
+								value={prompt}
+								onChange={(e) => setPrompt(e.target.value)}
+								disabled={transcribing}
+								placeholder="Add context to improve transcription"
+								className="w-full border border-gray-300 rounded-lg p-2.5"
+							/>
+						</div>
+					</div>
+
+					{/* Transcription result */}
+					{transcriptionResult && (
+						<div className="mt-4 p-3 border border-gray-200 rounded bg-gray-50">
+							<h3 className="font-medium mb-2">
+								Transcription Result
+							</h3>
+							<pre className="text-sm whitespace-pre-wrap overflow-auto max-h-60">
+								{JSON.stringify(transcriptionResult, null, 2)}
+							</pre>
+						</div>
+					)}
 				</div>
 			)}
 		</div>
