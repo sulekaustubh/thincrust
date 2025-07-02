@@ -2,13 +2,13 @@
 
 export const words = [
 	{
-		word: "Hlllllu",
+		word: "The",
 		start: 0.54,
 		end: 0.98,
 		score: 0.01,
 	},
 	{
-		word: "kaustubhzzzzzzz",
+		word: "time",
 		start: 0.98,
 		end: 1.34,
 		score: 0.86,

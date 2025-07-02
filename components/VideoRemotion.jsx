@@ -51,7 +51,7 @@ function VideoRemotion({ words }) {
 	};
 
 	return (
-		<div className="w-full p-4 bg-white rounded-lg shadow-md">
+		<div className="w-full p-4 bg-emerald-400 rounded-lg shadow-md">
 			<h2 className="text-2xl font-bold mb-4">Video Preview</h2>
 
 			<div className="flex flex-col md:flex-row gap-4 mb-4">
@@ -119,7 +119,7 @@ function VideoRemotion({ words }) {
 			{/* Caption Style Controls */}
 			<CaptionStyleControls onStyleChange={handleCaptionStyleChange} />
 
-			<div className="aspect-video w-full relative bg-black overflow-hidden mb-4">
+			<div className="aspect-video w-full relative bg-blue-400 overflow-hidden mb-4">
 				{Player ? (
 					<Player
 						component={RemotionVideo}
@@ -147,7 +147,7 @@ function VideoRemotion({ words }) {
 				)}
 			</div>
 
-			<div className="flex flex-col gap-4 mt-4">
+			{/* <div className="flex flex-col gap-4 mt-4">
 				<div className="p-4 bg-gray-100 rounded-md">
 					<div className="mb-4">
 						<pre className="bg-gray-800 text-white p-3 rounded-md text-xs overflow-x-auto">
@@ -155,7 +155,7 @@ function VideoRemotion({ words }) {
 						</pre>
 					</div>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 }

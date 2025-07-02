@@ -4,6 +4,8 @@ import {
 	useCurrentFrame,
 	useVideoConfig,
 	Sequence,
+	staticFile,
+	Video,
 } from "remotion";
 import { StyledWordGroup } from "./StyledCaption";
 
@@ -61,18 +63,16 @@ export const RemotionVideo = (props) => {
 	const { classNames, containerStyle } = captionStyle || defaultCaptionStyle;
 
 	return (
-		<AbsoluteFill style={{ backgroundColor: "red" }}>
-			{/* Background element */}
-			<div
+		<AbsoluteFill>
+			{/* Background video */}
+			<Video
+				src={staticFile("test3.mp4")}
 				style={{
-					position: "absolute",
-					top: 0,
-					left: 0,
 					width: "100%",
 					height: "100%",
-					background:
-						"linear-gradient(180deg, #111111 0%, #000000 100%)",
+					objectFit: "cover",
 				}}
+				muted={false}
 			/>
 
 			{/* Words container */}
