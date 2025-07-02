@@ -79,7 +79,7 @@ const FFmpegConfig = {
 	// Use a smaller pre-built version if available in the future
 };
 
-export default function AudioExtractor() {
+export default function AudioExtractor({ setWords }) {
 	const [audioUrl, setAudioUrl] = useState(null);
 	const [audioBlob, setAudioBlob] = useState(null);
 	const [loading, setLoading] = useState(false);
@@ -91,7 +91,6 @@ export default function AudioExtractor() {
 	const [language, setLanguage] = useState("english");
 	const [speakerLabels, setSpeakerLabels] = useState(false);
 	const [prompt, setPrompt] = useState("");
-	const [transcriptionResult, setTranscriptionResult] = useState(null);
 	const ffmpegRef = useRef(null);
 	const isMounted = useRef(true);
 
@@ -219,7 +218,6 @@ export default function AudioExtractor() {
 		setAudioUrl(null);
 		setAudioBlob(null);
 		setErrorMsg("");
-		setTranscriptionResult(null);
 		setLoadingStatus("Starting audio extraction...");
 
 		try {
@@ -278,7 +276,6 @@ export default function AudioExtractor() {
 
 		setTranscribing(true);
 		setErrorMsg("");
-		setTranscriptionResult(null);
 
 		try {
 			// Create form data for the API request
@@ -301,7 +298,7 @@ export default function AudioExtractor() {
 
 			const result = await response.json();
 			console.log("Transcription result:", result);
-			setTranscriptionResult(result);
+			setWords(result.words);
 		} catch (err) {
 			console.error("Transcription error:", err);
 			setErrorMsg(`Transcription failed: ${err.message}`);
@@ -378,18 +375,18 @@ export default function AudioExtractor() {
 						Your browser does not support the audio element.
 					</audio>
 					<div className="flex space-x-2">
-						<a
+						{/* <a
 							href={audioUrl}
 							download="extracted_audio.mp3"
 							className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded inline-block"
 						>
 							Download MP3
-						</a>
+						</a> */}
 
 						<button
 							onClick={handleTranscribe}
 							disabled={transcribing}
-							className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded inline-block disabled:bg-gray-400"
+							className="bg-green-500 w-full hover:bg-green-600 text-white py-2 px-4 rounded inline-block disabled:bg-gray-400"
 						>
 							{transcribing
 								? "Transcribing..."
@@ -398,7 +395,7 @@ export default function AudioExtractor() {
 					</div>
 
 					{/* Transcription options */}
-					<div className="mt-4">
+					{/* <div className="mt-4">
 						<h3 className="font-medium mb-2">
 							Transcription Options
 						</h3>
@@ -453,10 +450,10 @@ export default function AudioExtractor() {
 								className="w-full border border-gray-300 rounded-lg p-2.5"
 							/>
 						</div>
-					</div>
+					</div> */}
 
 					{/* Transcription result */}
-					{transcriptionResult && (
+					{/* {transcriptionResult && (
 						<div className="mt-4 p-3 border border-gray-200 rounded bg-gray-50">
 							<h3 className="font-medium mb-2">
 								Transcription Result
@@ -465,7 +462,7 @@ export default function AudioExtractor() {
 								{JSON.stringify(transcriptionResult, null, 2)}
 							</pre>
 						</div>
-					)}
+					)} */}
 				</div>
 			)}
 		</div>

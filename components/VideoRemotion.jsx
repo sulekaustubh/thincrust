@@ -54,7 +54,7 @@ function VideoRemotion({ words }) {
 		<div className="w-full p-4 bg-emerald-400 rounded-lg shadow-md">
 			<h2 className="text-2xl font-bold mb-4">Video Preview</h2>
 
-			<div className="flex flex-col md:flex-row gap-4 mb-4">
+			{/* <div className="flex flex-col md:flex-row gap-4 mb-4">
 				<div className="w-full md:w-1/2">
 					<label className="block text-sm font-medium text-gray-700 mb-1">
 						Video Width
@@ -87,9 +87,9 @@ function VideoRemotion({ words }) {
 						className="w-full p-2 border border-gray-300 rounded-md"
 					/>
 				</div>
-			</div>
+			</div> */}
 
-			<div className="flex flex-col md:flex-row gap-4 mb-4">
+			{/* <div className="flex flex-col md:flex-row gap-4 mb-4">
 				<div className="w-full md:w-1/2">
 					<label className="block text-sm font-medium text-gray-700 mb-1">
 						FPS
@@ -114,10 +114,10 @@ function VideoRemotion({ words }) {
 						className="w-full p-2 border border-gray-300 rounded-md"
 					/>
 				</div>
-			</div>
+			</div> */}
 
 			{/* Caption Style Controls */}
-			<CaptionStyleControls onStyleChange={handleCaptionStyleChange} />
+			{/* <CaptionStyleControls onStyleChange={handleCaptionStyleChange} /> */}
 
 			<div className="aspect-video w-full relative bg-blue-400 overflow-hidden mb-4">
 				{Player ? (

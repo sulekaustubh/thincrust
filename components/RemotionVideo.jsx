@@ -61,12 +61,14 @@ export const RemotionVideo = (props) => {
 
 	// Use provided style or default
 	const { classNames, containerStyle } = captionStyle || defaultCaptionStyle;
+	const baseUrl =
+		"https://oueryxgfpeqrrljyggyg.supabase.co/storage/v1/object/public/videos/user_input/";
 
 	return (
 		<AbsoluteFill>
 			{/* Background video */}
 			<Video
-				src={staticFile("test3.mp4")}
+				src={`${baseUrl}vm.mp4`}
 				style={{
 					width: "100%",
 					height: "100%",

@@ -135,7 +135,7 @@ export const StyledCaption = ({
 	const combinedStyles = {
 		...tailwindStyles,
 		...style,
-		opacity,
+		// opacity,
 		fontSize,
 	};
 
