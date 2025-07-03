@@ -154,6 +154,23 @@ export const StyledWordGroup = ({
 	const frame = useCurrentFrame();
 	const { fps } = useVideoConfig();
 
+	// Ensure words is an array and contains only strings
+	const safeWords = Array.isArray(words)
+		? words
+				.map((word) => (typeof word === "string" ? word : String(word)))
+				.filter(Boolean)
+		: [];
+
+	// Debug logging (will be visible in browser console during rendering)
+	if (safeWords.some((word) => word.includes("{"))) {
+		console.error(
+			"Invalid word detected:",
+			words,
+			"Safe words:",
+			safeWords
+		);
+	}
+
 	return (
 		<StyledCaption
 			startTime={startTime}
@@ -168,7 +185,7 @@ export const StyledWordGroup = ({
 				...style,
 			}}
 		>
-			{words.join(" ")}
+			{safeWords.join(" ")}
 		</StyledCaption>
 	);
 };

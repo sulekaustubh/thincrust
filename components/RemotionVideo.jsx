@@ -17,14 +17,22 @@ const groupWords = (words, groupSize = 3) => {
 	let totalScore = 0;
 
 	words.forEach((wordData, index) => {
+		// Ensure wordData is an object and has the required properties
+		if (!wordData || typeof wordData !== "object" || !wordData.word) {
+			console.warn("Invalid word data:", wordData);
+			return;
+		}
+
 		// Start a new group if this is the first word or if max group size reached
 		if (currentGroup.length === 0) {
 			currentStartTime = wordData.start;
 			totalScore = 0;
 		}
 
-		currentGroup.push(wordData.word);
-		totalScore += wordData.score;
+		// Explicitly extract only the word text (string)
+		const wordText = String(wordData.word).trim();
+		currentGroup.push(wordText);
+		totalScore += wordData.score || 0;
 
 		// Complete the group if we've reached the desired size or it's the last word
 		if (currentGroup.length === groupSize || index === words.length - 1) {
@@ -61,20 +69,25 @@ export const RemotionVideo = (props) => {
 
 	// Use provided style or default
 	const { classNames, containerStyle } = captionStyle || defaultCaptionStyle;
-	const baseUrl =
-		"https://oueryxgfpeqrrljyggyg.supabase.co/storage/v1/object/public/videos/user_input/";
+
+	// Use remote video with proper timeout handling
+	const videoSrc =
+		"https://oueryxgfpeqrrljyggyg.supabase.co/storage/v1/object/public/videos/user_input/F99.mp4";
 
 	return (
 		<AbsoluteFill>
 			{/* Background video */}
 			<Video
-				src={`${baseUrl}vm.mp4`}
+				src={videoSrc}
 				style={{
 					width: "100%",
 					height: "100%",
 					objectFit: "cover",
 				}}
 				muted={false}
+				// Add timeout and loading properties for better rendering
+				preload="metadata"
+				playsInline
 			/>
 
 			{/* Words container */}

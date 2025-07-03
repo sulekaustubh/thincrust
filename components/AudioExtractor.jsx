@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile } from "@ffmpeg/util";
+import { useWordsStore } from "@/store/useWordsStore";
 
 // Cache keys
 const FFMPEG_VERSION = "0.12.10";
@@ -79,7 +80,8 @@ const FFmpegConfig = {
 	// Use a smaller pre-built version if available in the future
 };
 
-export default function AudioExtractor({ setWords }) {
+export default function AudioExtractor() {
+	const { setWords } = useWordsStore();
 	const [audioUrl, setAudioUrl] = useState(null);
 	const [audioBlob, setAudioBlob] = useState(null);
 	const [loading, setLoading] = useState(false);

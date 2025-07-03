@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { RemotionVideo } from "./RemotionVideo";
 import { CaptionStyleControls } from "./CaptionStyleControls";
+import { useWordsStore } from "@/store/useWordsStore";
 
-function VideoRemotion({ words }) {
+function VideoRemotion() {
+	const { words } = useWordsStore();
 	const [playing, setPlaying] = useState(false);
 	const [durationInFrames, setDurationInFrames] = useState(300);
 	const [fps, setFps] = useState(30);
@@ -18,8 +20,8 @@ function VideoRemotion({ words }) {
 		containerStyle: { bottom: "20%", top: "auto" },
 	});
 
-	// Use the words array from props or default to an empty array
-	const wordsToUse = words || [];
+	// Use the words array from store
+	const wordsToUse = words;
 
 	// Dynamically import the Player component on the client side
 	useEffect(() => {
